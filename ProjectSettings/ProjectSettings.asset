@@ -4,7 +4,7 @@
 PlayerSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 24
-  productGUID: fa68ca49a0d85974cb79b379d800ee0f
+  productGUID: b1311780bbc9cc140878d7f9fcf7358c
   AndroidProfiler: 0
   AndroidFilterTouchesWhenObscured: 0
   AndroidEnableSustainedPerformanceMode: 0
@@ -74,8 +74,8 @@ PlayerSettings:
   androidMinimumWindowWidth: 400
   androidMinimumWindowHeight: 300
   androidFullscreenMode: 1
-  defaultIsNativeResolution: 0
-  macRetinaSupport: 0
+  defaultIsNativeResolution: 1
+  macRetinaSupport: 1
   runInBackground: 1
   captureSingleScreen: 0
   muteOtherAudioSources: 0
@@ -129,11 +129,11 @@ PlayerSettings:
   vulkanEnableLateAcquireNextImage: 0
   vulkanEnableCommandBufferRecycling: 1
   m_SupportedAspectRatios:
-    4:3: 0
-    5:4: 0
-    16:10: 0
+    4:3: 1
+    5:4: 1
+    16:10: 1
     16:9: 1
-    Others: 0
+    Others: 1
   bundleVersion: 1.0
   preloadedAssets: []
   metroInputSource: 0
@@ -154,8 +154,7 @@ PlayerSettings:
   resetResolutionOnWindowResize: 0
   androidSupportedAspectRatio: 1
   androidMaxAspectRatio: 2.1
-  applicationIdentifier:
-    Standalone: com.Destoryer.TMI-Mod-Manager
+  applicationIdentifier: {}
   buildNumber:
     Standalone: 0
     iPhone: 0
@@ -734,10 +733,10 @@ PlayerSettings:
   apiCompatibilityLevel: 6
   activeInputHandler: 0
   windowsGamepadBackendHint: 0
-  cloudProjectId: 2577f2c1-cfb7-48df-b4b0-1f620eb806f2
+  cloudProjectId: 2a1ad881-f17a-4f85-b25a-918dd373213d
   framebufferDepthMemorylessMode: 0
   qualitySettingsNames: []
-  projectName: TMI Mod Manager
+  projectName: TMI Mod Manager 2024-10-20_10-02-37
   organizationId: scarlet-devil-mansion
   cloudEnabled: 0
   legacyClampBlendShapeWeights: 0
