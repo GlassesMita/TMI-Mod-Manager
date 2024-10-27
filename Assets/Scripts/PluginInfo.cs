@@ -6,4 +6,5 @@ public class PluginInfo
     public string version;
     public string fileName;
     public string pluginInfo;
+    public string[] fileInclude;
 }
