@@ -1,12 +1,23 @@
 # TMI Mod Manager
-
+![Windows](https://img.shields.io/badge/Windows-0078D6?style=for-the-badge&logo=windows&logoColor=white)
+![C#](https://img.shields.io/badge/C%23-239120?style=for-the-badge&logo=c-sharp&logoColor=white)
+![Unity](https://img.shields.io/badge/Unity-100000?style=for-the-badge&logo=unity&logoColor=white)
+![Git](https://img.shields.io/badge/GIT-E44C30?style=for-the-badge&logo=git&logoColor=white)
+![Windows Terminal](https://img.shields.io/badge/windows%20terminal-4D4D4D?style=for-the-badge&logo=windows%20terminal&logoColor=white)
+![Visual Studio](https://img.shields.io/badge/Visual_Studio-5C2D91?style=for-the-badge&logo=visual%20studio&logoColor=white)
 ## 项目简介
 TMI Mod Manager 是一个用于管理和组织夜雀食堂的 MOD 的工具。它旨在为用户提供一个简便的界面，以便轻松添加、删除和管理游戏中的模组。
 
-## 免责声明
-**注意**: 本项目为非官方项目，与原始开发团队无关。我们致力于为用户提供一个方便的模组管理工具，但请注意，使用本项目可能会带来一定的风险。请在使用前仔细阅读相关文档，并自行承担使用本项目的风险。
+> [!IMPORTANT]
+> ** 免责声明 **
+> **注意**: 本项目为非官方项目，与原始开发团队无关。我们致力于为用户提供一个方便的模组管理工具，但请注意，使用本项目可能会带来一定的风险。请在使用前仔细阅读相关文档，并自行承担使用本项目的风险。
 
 ## 功能特性
+> [!NOTE]
+> 以下功能仍在开发中，这些功能可能会变更，甚至被删除。
+>
+> 请以最新的发布版本为准。
+
 - **模组管理**: 轻松添加、删除和更新模组。
 - **用户友好界面**: 简洁直观的用户界面，方便操作。
 - **兼容性检查**: 自动检查模组之间的兼容性，避免冲突。
