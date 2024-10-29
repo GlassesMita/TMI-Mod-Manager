@@ -5,7 +5,7 @@ TMI Mod Manager 是一个用于管理和组织夜雀食堂的 MOD 的工具。�
 
 ## 免责声明
 
-!Assets/Images/HeaderLogo.png
+![image](Assets/Images/HeaderLogo.png)
 
 **注意**: 本项目为非官方项目，与原始开发团队无关。我们致力于为用户提供一个方便的模组管理工具，但请注意，使用本项目可能会带来一定的风险。请在使用前仔细阅读相关文档，并自行承担使用本项目的风险。
 
@@ -15,10 +15,10 @@ TMI Mod Manager 是一个用于管理和组织夜雀食堂的 MOD 的工具。�
 - **兼容性检查**: 自动检查模组之间的兼容性，避免冲突。
 
 ## 文件结构
-- **Assets**: 存放项目的资源文件。
-- **Packages**: 包含项目的依赖包。
-- **ProjectSettings**: 项目的配置文件。
-- **.vs**: Visual Studio 配置文件。
+- [**Assets**](Assets): 存放项目的资源文件。
+- [**Packages**](Packages): 包含项目的依赖包。
+- [**ProjectSettings**](ProjectSettings): 项目的配置文件。
+- [**.vs**](.vs): Visual Studio 配置文件。
 
 ## 环境要求
 - **Unity 版本**: 2021.3.28f1
