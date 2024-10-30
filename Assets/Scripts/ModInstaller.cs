@@ -3,16 +3,16 @@ using UnityEngine.UI;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
-using SFB; // Ê¹ÓÃ StandaloneFileBrowser ÃüÃû¿Õ¼ä
+using SFB; // ä½¿ç”¨ StandaloneFileBrowser å‘½åç©ºé—´
 
 public class ModInstaller : MonoBehaviour
 {
-    public string dirPath; // Ä¿±êÄ¿Â¼Â·¾¶
+    public string dirPath; // ç›®æ ‡ç›®å½•è·¯å¾„
     public Button selectFileButton;
-    public GameObject confirmDialog; // È·ÈÏµ¯´°
-    public Text confirmDialogText; // È·ÈÏµ¯´°ÎÄ±¾
-    public Button confirmButton; // È·ÈÏ°´Å¥
-    public Button cancelButton; // È¡Ïû°´Å¥
+    public GameObject confirmDialog; // ç¡®è®¤å¼¹çª—
+    public Text confirmDialogText; // ç¡®è®¤å¼¹çª—æ–‡æœ¬
+    public Button confirmButton; // ç¡®è®¤æŒ‰é’®
+    public Button cancelButton; // å–æ¶ˆæŒ‰é’®
 
     public UIManager uiManager;
 
@@ -29,7 +29,7 @@ public class ModInstaller : MonoBehaviour
 
     void OpenFileSelector()
     {
-        // Ê¹ÓÃ StandaloneFileBrowser ´ò¿ªÎÄ¼şÑ¡Ôñ¶Ô»°¿ò
+        // ä½¿ç”¨ StandaloneFileBrowser æ‰“å¼€æ–‡ä»¶é€‰æ‹©å¯¹è¯æ¡†
         var extensions = new[] {
             new ExtensionFilter( "Izakaya File", "izakaya" ),
             new ExtensionFilter( "ZIP File", "zip" ),
@@ -57,7 +57,7 @@ public class ModInstaller : MonoBehaviour
         {
             using (ZipArchive archive = ZipFile.OpenRead(zipFilePath))
             {
-                // ¼ì²éÊÇ·ñ´æÔÚ Manifest.json ÎÄ¼ş
+                // æ£€æŸ¥æ˜¯å¦å­˜åœ¨ Manifest.json æ–‡ä»¶
                 var manifestEntry = archive.GetEntry("Manifest.json");
                 if (manifestEntry == null)
                 {
@@ -65,16 +65,16 @@ public class ModInstaller : MonoBehaviour
                     return false;
                 }
 
-                // ¶ÁÈ¡ Manifest.json ÎÄ¼şÄÚÈİ
+                // è¯»å– Manifest.json æ–‡ä»¶å†…å®¹
                 using (var reader = new StreamReader(manifestEntry.Open()))
                 {
                     string manifestContent = reader.ReadToEnd();
-                    // ½âÎö JSON ÄÚÈİ
+                    // è§£æ JSON å†…å®¹
                     var manifest = JsonUtility.FromJson<PluginInfo>(manifestContent);
                     pluginName = manifest.pluginName;
                     version = manifest.version;
 
-                    // ÑéÖ¤ JSON ÄÚÈİÊÇ·ñ·Ç¿Õ
+                    // éªŒè¯ JSON å†…å®¹æ˜¯å¦éç©º
                     if (string.IsNullOrEmpty(pluginName) || string.IsNullOrEmpty(version))
                     {
                         Debug.LogError("Manifest.json file is missing required fields.");
@@ -82,7 +82,7 @@ public class ModInstaller : MonoBehaviour
                     }
                 }
 
-                // Ğ£ÑéÂß¼­Ê¾Àı£ºÈ·±£ËùÓĞÎÄ¼ş¶¼´æÔÚ
+                // æ ¡éªŒé€»è¾‘ç¤ºä¾‹ï¼šç¡®ä¿æ‰€æœ‰æ–‡ä»¶éƒ½å­˜åœ¨
                 return archive.Entries.Any(entry => !string.IsNullOrEmpty(entry.Name));
             }
         }

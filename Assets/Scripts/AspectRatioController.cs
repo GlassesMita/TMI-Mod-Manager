@@ -6,37 +6,37 @@ using System.Text;
 using UnityEngine.Events;
 
 /// <summary>
-///Ç¿ÖÆÉèÖÃUnityÓÎÏ·´°¿ÚµÄ³¤¿í±È¡£Äã¿ÉÒÔµ÷Õû´°¿ÚµÄ´óĞ¡£¬Ëû»áÇ¿ÖÆ±£³ÖÒ»¶¨±ÈÀı
-///Í¨¹ıÀ¹½Ø´°¿Ú´óĞ¡µ÷ÕûÊÂ¼ş(WindowProc»Øµ÷)²¢ÏàÓ¦µØĞŞ¸ÄËüÃÇÀ´ÊµÏÖµÄ
-///Ò²¿ÉÒÔÓÃÏñËØÎª´°¿ÚÉèÖÃ×îĞ¡/×î´ó¿í¶ÈºÍ¸ß¶È
-///³¤¿í±ÈºÍ×îĞ¡/×î´ó·Ö±æÂÊ¶¼Óë´°¿ÚÇøÓòÓĞ¹Ø£¬±êÌâÀ¸ºÍ±ß¿ò²»°üÀ¨ÔÚÄÚ
-///¸Ã½Å±¾»¹½«ÔÚÓ¦ÓÃ³ÌĞò´¦ÓÚÈ«ÆÁ×´Ì¬Ê±Ç¿ÖÆÉèÖÃ³¤¿í±È¡£µ±ÄãÇĞ»»µ½È«ÆÁ£¬
-///Ó¦ÓÃ³ÌĞò½«×Ô¶¯ÉèÖÃÎªµ±Ç°ÏÔÊ¾Æ÷ÉÏ¿ÉÄÜµÄ×î´ó·Ö±æÂÊ£¬¶øÈÔÈ»±£³Ö¹Ì¶¨±È¡£Èç¹ûÏÔÊ¾Æ÷Ã»ÓĞÏàÍ¬µÄ¿í¸ß±È£¬Ôò»áÔÚ×ó/ÓÒ»òÉÏ/ÏÂÌí¼ÓºÚÌõ
-///È·±£ÄãÔÚPlayerSettingÖĞÉèÖÃÁË¡°Resizable Window¡±£¬·ñÔòÎŞ·¨µ÷Õû´óĞ¡
-///Èç¹ûÈ¡Ïû²»Ö§³ÖµÄ³¤¿í±ÈÔÚPlayerSettingÖĞÉèÖÃ¡°Supported Aspect Rations¡±
-///×¢Òâ:ÒòÎªÊ¹ÓÃÁËWinAPI£¬ËùÒÔÖ»ÄÜÔÚWindowsÉÏ¹¤×÷¡£ÔÚWindows 10ÉÏ²âÊÔ¹ı
+///å¼ºåˆ¶è®¾ç½®Unityæ¸¸æˆçª—å£çš„é•¿å®½æ¯”ã€‚ä½ å¯ä»¥è°ƒæ•´çª—å£çš„å¤§å°ï¼Œä»–ä¼šå¼ºåˆ¶ä¿æŒä¸€å®šæ¯”ä¾‹
+///é€šè¿‡æ‹¦æˆªçª—å£å¤§å°è°ƒæ•´äº‹ä»¶(WindowProcå›è°ƒ)å¹¶ç›¸åº”åœ°ä¿®æ”¹å®ƒä»¬æ¥å®ç°çš„
+///ä¹Ÿå¯ä»¥ç”¨åƒç´ ä¸ºçª—å£è®¾ç½®æœ€å°/æœ€å¤§å®½åº¦å’Œé«˜åº¦
+///é•¿å®½æ¯”å’Œæœ€å°/æœ€å¤§åˆ†è¾¨ç‡éƒ½ä¸çª—å£åŒºåŸŸæœ‰å…³ï¼Œæ ‡é¢˜æ å’Œè¾¹æ¡†ä¸åŒ…æ‹¬åœ¨å†…
+///è¯¥è„šæœ¬è¿˜å°†åœ¨åº”ç”¨ç¨‹åºå¤„äºå…¨å±çŠ¶æ€æ—¶å¼ºåˆ¶è®¾ç½®é•¿å®½æ¯”ã€‚å½“ä½ åˆ‡æ¢åˆ°å…¨å±ï¼Œ
+///åº”ç”¨ç¨‹åºå°†è‡ªåŠ¨è®¾ç½®ä¸ºå½“å‰æ˜¾ç¤ºå™¨ä¸Šå¯èƒ½çš„æœ€å¤§åˆ†è¾¨ç‡ï¼Œè€Œä»ç„¶ä¿æŒå›ºå®šæ¯”ã€‚å¦‚æœæ˜¾ç¤ºå™¨æ²¡æœ‰ç›¸åŒçš„å®½é«˜æ¯”ï¼Œåˆ™ä¼šåœ¨å·¦/å³æˆ–ä¸Š/ä¸‹æ·»åŠ é»‘æ¡
+///ç¡®ä¿ä½ åœ¨PlayerSettingä¸­è®¾ç½®äº†â€œResizable Windowâ€ï¼Œå¦åˆ™æ— æ³•è°ƒæ•´å¤§å°
+///å¦‚æœå–æ¶ˆä¸æ”¯æŒçš„é•¿å®½æ¯”åœ¨PlayerSettingä¸­è®¾ç½®â€œSupported Aspect Rationsâ€
+///æ³¨æ„:å› ä¸ºä½¿ç”¨äº†WinAPIï¼Œæ‰€ä»¥åªèƒ½åœ¨Windowsä¸Šå·¥ä½œã€‚åœ¨Windows 10ä¸Šæµ‹è¯•è¿‡
 /// </summary>
 public class AspectRatioController : MonoBehaviour
 {
     /// <summary>
-    /// Ã¿µ±´°¿Ú·Ö±æÂÊ¸Ä±ä»òÓÃ»§ÇĞ»»È«ÆÁÊ±£¬¶¼»á´¥·¢´ËÊÂ¼ş
-    ///  ²ÎÊıÊÇĞÂµÄ¿í¶È¡¢¸ß¶ÈºÍÈ«ÆÁ×´Ì¬(true±íÊ¾È«ÆÁ)
+    /// æ¯å½“çª—å£åˆ†è¾¨ç‡æ”¹å˜æˆ–ç”¨æˆ·åˆ‡æ¢å…¨å±æ—¶ï¼Œéƒ½ä¼šè§¦å‘æ­¤äº‹ä»¶
+    ///  å‚æ•°æ˜¯æ–°çš„å®½åº¦ã€é«˜åº¦å’Œå…¨å±çŠ¶æ€(trueè¡¨ç¤ºå…¨å±)
     /// </summary>
     public ResolutionChangedEvent resolutionChangedEvent;
     [Serializable]
     public class ResolutionChangedEvent : UnityEvent<int, int, bool> { }
 
-    // Èç¹ûÎªfalse£¬Ôò×èÖ¹ÇĞ»»µ½È«ÆÁ
+    // å¦‚æœä¸ºfalseï¼Œåˆ™é˜»æ­¢åˆ‡æ¢åˆ°å…¨å±
     [SerializeField]
     private bool allowFullscreen = true;
 
-    // ³¤¿í±ÈµÄ¿í¶ÈºÍ¸ß¶È
+    // é•¿å®½æ¯”çš„å®½åº¦å’Œé«˜åº¦
     [SerializeField]
     private float aspectRatioWidth = 16;
     [SerializeField]
     private float aspectRatioHeight = 9;
 
-    // ×îĞ¡ÖµºÍ×î´óÖµµÄ´°¿Ú¿í¶È/¸ß¶ÈÏñËØ
+    // æœ€å°å€¼å’Œæœ€å¤§å€¼çš„çª—å£å®½åº¦/é«˜åº¦åƒç´ 
     [SerializeField]
     private int minWidthPixel = 512;
     [SerializeField]
@@ -46,97 +46,97 @@ public class AspectRatioController : MonoBehaviour
     [SerializeField]
     private int maxHeightPixel = 2048;
 
-    // µ±Ç°Ëø¶¨³¤¿í±È¡£
+    // å½“å‰é”å®šé•¿å®½æ¯”ã€‚
     private float aspect;
 
-    // ´°¿ÚµÄ¿í¶ÈºÍ¸ß¶È¡£²»°üÀ¨±ß¿òºÍ´°¿Ú±êÌâÀ¸
-    // µ±µ÷Õû´°¿Ú´óĞ¡Ê±£¬¾Í»áÉèÖÃÕâĞ©Öµ
+    // çª—å£çš„å®½åº¦å’Œé«˜åº¦ã€‚ä¸åŒ…æ‹¬è¾¹æ¡†å’Œçª—å£æ ‡é¢˜æ 
+    // å½“è°ƒæ•´çª—å£å¤§å°æ—¶ï¼Œå°±ä¼šè®¾ç½®è¿™äº›å€¼
     private int setWidth = -1;
     private int setHeight = -1;
 
-    // ×îºóÒ»Ö¡È«ÆÁ×´Ì¬¡£
+    // æœ€åä¸€å¸§å…¨å±çŠ¶æ€ã€‚
     private bool wasFullscreenLastFrame;
 
-    // ÊÇ·ñ³õÊ¼»¯ÁËAspectRatioController
-    // Ò»µ©×¢²áÁËWindowProc»Øµ÷º¯Êı£¬¾Í½«ÆäÉèÖÃÎªtrue
+    // æ˜¯å¦åˆå§‹åŒ–äº†AspectRatioController
+    // ä¸€æ—¦æ³¨å†Œäº†WindowProcå›è°ƒå‡½æ•°ï¼Œå°±å°†å…¶è®¾ç½®ä¸ºtrue
     private bool started;
 
-    // ÏÔÊ¾Æ÷µÄ¿í¶ÈºÍ¸ß¶È¡£ÕâÊÇ´°¿Úµ±Ç°´ò¿ªµÄ¼àÊÓÆ÷
+    // æ˜¾ç¤ºå™¨çš„å®½åº¦å’Œé«˜åº¦ã€‚è¿™æ˜¯çª—å£å½“å‰æ‰“å¼€çš„ç›‘è§†å™¨
     private int pixelHeightOfCurrentScreen;
     private int pixelWidthOfCurrentScreen;
 
-    //Ò»µ©ÓÃ»§ÇëÇóÖÕÖ¹applaction£¬Ôò½«ÆäÉèÖÃÎªtrue
+    //ä¸€æ—¦ç”¨æˆ·è¯·æ±‚ç»ˆæ­¢applactionï¼Œåˆ™å°†å…¶è®¾ç½®ä¸ºtrue
     private bool quitStarted;
 
-    // WinAPIÏà¹Ø¶¨Òå
+    // WinAPIç›¸å…³å®šä¹‰
     #region WINAPI
 
-    // µ±´°¿Úµ÷ÕûÊ±,WM_SIZINGÏûÏ¢Í¨¹ıWindowProc»Øµ÷·¢ËÍµ½´°¿Ú
+    // å½“çª—å£è°ƒæ•´æ—¶,WM_SIZINGæ¶ˆæ¯é€šè¿‡WindowProcå›è°ƒå‘é€åˆ°çª—å£
     private const int WM_SIZING = 0x214;
 
-    // WM´óĞ¡µ÷ÕûÏûÏ¢µÄ²ÎÊı
+    // WMå¤§å°è°ƒæ•´æ¶ˆæ¯çš„å‚æ•°
     private const int WMSZ_LEFT = 1;
     private const int WMSZ_RIGHT = 2;
     private const int WMSZ_TOP = 3;
     private const int WMSZ_BOTTOM = 6;
 
-    // »ñÈ¡Ö¸ÏòWindowProcº¯ÊıµÄÖ¸Õë
+    // è·å–æŒ‡å‘WindowProcå‡½æ•°çš„æŒ‡é’ˆ
     private const int GWLP_WNDPROC = -4;
 
-    // Î¯ÍĞÉèÖÃÎªĞÂµÄWindowProc»Øµ÷º¯Êı
+    // å§”æ‰˜è®¾ç½®ä¸ºæ–°çš„WindowProcå›è°ƒå‡½æ•°
     private delegate IntPtr WndProcDelegate(IntPtr hWnd, uint msg, IntPtr wParam, IntPtr lParam);
     private WndProcDelegate wndProcDelegate;
 
-    // ¼ìË÷µ÷ÓÃÏß³ÌµÄÏß³Ì±êÊ¶·û
+    // æ£€ç´¢è°ƒç”¨çº¿ç¨‹çš„çº¿ç¨‹æ ‡è¯†ç¬¦
     [DllImport("kernel32.dll")]
     private static extern uint GetCurrentThreadId();
 
-    // ¼ìË÷Ö¸¶¨´°¿ÚËùÊôÀàµÄÃû³Æ
+    // æ£€ç´¢æŒ‡å®šçª—å£æ‰€å±ç±»çš„åç§°
     [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
     private static extern int GetClassName(IntPtr hWnd, StringBuilder lpString, int nMaxCount);
 
-    // Í¨¹ı½«¾ä±ú´«µİ¸øÃ¿¸ö´°¿Ú£¬ÒÀ´Î´«µİ¸øÓ¦ÓÃ³ÌĞò¶¨ÒåµÄ»Øµ÷º¯Êı£¬Ã¶¾ÙÓëÏß³Ì¹ØÁªµÄËùÓĞ·Ç×Ó´°¿Ú
+    // é€šè¿‡å°†å¥æŸ„ä¼ é€’ç»™æ¯ä¸ªçª—å£ï¼Œä¾æ¬¡ä¼ é€’ç»™åº”ç”¨ç¨‹åºå®šä¹‰çš„å›è°ƒå‡½æ•°ï¼Œæšä¸¾ä¸çº¿ç¨‹å…³è”çš„æ‰€æœ‰éå­çª—å£
     [DllImport("user32.dll")]
     private static extern bool EnumThreadWindows(uint dwThreadId, EnumWindowsProc lpEnumFunc, IntPtr lParam);
     private delegate bool EnumWindowsProc(IntPtr hWnd, IntPtr lParam);
 
-    // ½«ÏûÏ¢ĞÅÏ¢´«µİ¸øÖ¸¶¨µÄ´°¿Ú¹ı³Ì
+    // å°†æ¶ˆæ¯ä¿¡æ¯ä¼ é€’ç»™æŒ‡å®šçš„çª—å£è¿‡ç¨‹
     [DllImport("user32.dll")]
     private static extern IntPtr CallWindowProc(IntPtr lpPrevWndFunc, IntPtr hWnd, uint Msg, IntPtr wParam, IntPtr lParam);
 
-    // ¼ìË÷Ö¸¶¨´°¿ÚµÄ±ß¿òµÄ³ß´ç
-    // ³ß´çÊÇÔÚÆÁÄ»×ø±êÖĞ¸ø³öµÄ£¬ËüÊÇÏà¶ÔÓÚÆÁÄ»×óÉÏ½ÇµÄ
+    // æ£€ç´¢æŒ‡å®šçª—å£çš„è¾¹æ¡†çš„å°ºå¯¸
+    // å°ºå¯¸æ˜¯åœ¨å±å¹•åæ ‡ä¸­ç»™å‡ºçš„ï¼Œå®ƒæ˜¯ç›¸å¯¹äºå±å¹•å·¦ä¸Šè§’çš„
     [DllImport("user32.dll", SetLastError = true)]
     private static extern bool GetWindowRect(IntPtr hwnd, ref RECT lpRect);
 
-    //¼ìË÷´°¿Ú¿Í»§ÇøÓòµÄ×ø±ê¡£¿Í»§¶Ë×ø±êÖ¸¶¨×óÉÏ½Ç
-    //ÒÔ¼°¿Í»§ÇøµÄÓÒÏÂ½Ç¡£ÒòÎª¿Í»§»ú×ø±êÊÇÏà¶ÔÓÚ×óÉÏ½ÇµÄ
-    //ÔÚ´°¿ÚµÄ¿Í»§ÇøÓòµÄ½ÇÂä£¬×óÉÏ½ÇµÄ×ø±êÊÇ(0,0)
+    //æ£€ç´¢çª—å£å®¢æˆ·åŒºåŸŸçš„åæ ‡ã€‚å®¢æˆ·ç«¯åæ ‡æŒ‡å®šå·¦ä¸Šè§’
+    //ä»¥åŠå®¢æˆ·åŒºçš„å³ä¸‹è§’ã€‚å› ä¸ºå®¢æˆ·æœºåæ ‡æ˜¯ç›¸å¯¹äºå·¦ä¸Šè§’çš„
+    //åœ¨çª—å£çš„å®¢æˆ·åŒºåŸŸçš„è§’è½ï¼Œå·¦ä¸Šè§’çš„åæ ‡æ˜¯(0,0)
     [DllImport("user32.dll")]
     private static extern bool GetClientRect(IntPtr hWnd, ref RECT lpRect);
 
-    // ¸ü¸ÄÖ¸¶¨´°¿ÚµÄÊôĞÔ¡£¸Ãº¯Êı»¹½«Ö¸¶¨Æ«ÒÆÁ¿µÄ32Î»(³¤)ÖµÉèÖÃµ½¶îÍâµÄ´°¿ÚÄÚ´æÖĞ
+    // æ›´æ”¹æŒ‡å®šçª—å£çš„å±æ€§ã€‚è¯¥å‡½æ•°è¿˜å°†æŒ‡å®šåç§»é‡çš„32ä½(é•¿)å€¼è®¾ç½®åˆ°é¢å¤–çš„çª—å£å†…å­˜ä¸­
     [DllImport("user32.dll", EntryPoint = "SetWindowLong", CharSet = CharSet.Auto)]
     private static extern IntPtr SetWindowLong32(IntPtr hWnd, int nIndex, IntPtr dwNewLong);
 
-    //¸ü¸ÄÖ¸¶¨´°¿ÚµÄÊôĞÔ¡£¸Ãº¯Êı»¹ÔÚ¶îÍâµÄ´°¿ÚÄÚ´æÖĞÖ¸¶¨µÄÆ«ÒÆÁ¿´¦ÉèÖÃÒ»¸öÖµ
+    //æ›´æ”¹æŒ‡å®šçª—å£çš„å±æ€§ã€‚è¯¥å‡½æ•°è¿˜åœ¨é¢å¤–çš„çª—å£å†…å­˜ä¸­æŒ‡å®šçš„åç§»é‡å¤„è®¾ç½®ä¸€ä¸ªå€¼
     [DllImport("user32.dll", EntryPoint = "SetWindowLongPtr", CharSet = CharSet.Auto)]
     private static extern IntPtr SetWindowLongPtr64(IntPtr hWnd, int nIndex, IntPtr dwNewLong);
 
-    //ÓÃÓÚ²éÕÒ´°¿Ú¾ä±úµÄUnity´°¿ÚÀàµÄÃû³Æ
+    //ç”¨äºæŸ¥æ‰¾çª—å£å¥æŸ„çš„Unityçª—å£ç±»çš„åç§°
     private const string UNITY_WND_CLASSNAME = "UnityWndClass";
 
-    // Unity´°¿ÚµÄ´°¿Ú¾ä±ú
+    // Unityçª—å£çš„çª—å£å¥æŸ„
     private IntPtr unityHWnd;
 
-    // Ö¸Ïò¾ÉWindowProc»Øµ÷º¯ÊıµÄÖ¸Õë
+    // æŒ‡å‘æ—§WindowProcå›è°ƒå‡½æ•°çš„æŒ‡é’ˆ
     private IntPtr oldWndProcPtr;
 
-    // Ö¸ÏòÎÒÃÇ×Ô¼ºµÄ´°¿Ú»Øµ÷º¯ÊıµÄÖ¸Õë
+    // æŒ‡å‘æˆ‘ä»¬è‡ªå·±çš„çª—å£å›è°ƒå‡½æ•°çš„æŒ‡é’ˆ
     private IntPtr newWndProcPtr;
 
     /// <summary>
-    /// WinAPI¾ØĞÎ¶¨Òå¡£
+    /// WinAPIçŸ©å½¢å®šä¹‰ã€‚
     /// </summary>
     [StructLayout(LayoutKind.Sequential)]
     public struct RECT
@@ -151,13 +151,13 @@ public class AspectRatioController : MonoBehaviour
 
     void Start()
     {
-        // ²»ÒªÔÚUnity±à¼­Æ÷ÖĞ×¢²áWindowProc»Øµ÷º¯Êı£¬Ëü»áÖ¸ÏòUnity±à¼­Æ÷´°¿Ú£¬¶ø²»ÊÇGameÊÓÍ¼
+        // ä¸è¦åœ¨Unityç¼–è¾‘å™¨ä¸­æ³¨å†ŒWindowProcå›è°ƒå‡½æ•°ï¼Œå®ƒä¼šæŒ‡å‘Unityç¼–è¾‘å™¨çª—å£ï¼Œè€Œä¸æ˜¯Gameè§†å›¾
 
 #if !UNITY_EDITOR
-        //×¢²á»Øµ÷£¬È»ºóÓ¦ÓÃ³ÌĞòÏëÒªÍË³ö
+        //æ³¨å†Œå›è°ƒï¼Œç„¶ååº”ç”¨ç¨‹åºæƒ³è¦é€€å‡º
         Application.wantsToQuit += ApplicationWantsToQuit;
  
-        // ÕÒµ½Ö÷Unity´°¿ÚµÄ´°¿Ú¾ä±ú
+        // æ‰¾åˆ°ä¸»Unityçª—å£çš„çª—å£å¥æŸ„
         EnumThreadWindows(GetCurrentThreadId(), (hWnd, lParam) =>
         {
             var classText = new StringBuilder(UNITY_WND_CLASSNAME.Length + 1);
@@ -171,39 +171,39 @@ public class AspectRatioController : MonoBehaviour
             return true;
         }, IntPtr.Zero);
  
-        // ½«³¤¿í±ÈÓ¦ÓÃÓÚµ±Ç°·Ö±æÂÊ
+        // å°†é•¿å®½æ¯”åº”ç”¨äºå½“å‰åˆ†è¾¨ç‡
         SetAspectRatio(aspectRatioWidth, aspectRatioHeight, true);
  
-        // ±£´æµ±Ç°µÄÈ«ÆÁ×´Ì¬
+        // ä¿å­˜å½“å‰çš„å…¨å±çŠ¶æ€
         wasFullscreenLastFrame = Screen.fullScreen;
  
-        // Register (replace) WindowProc callback¡£Ã¿µ±Ò»¸ö´°¿ÚÊÂ¼ş±»´¥·¢Ê±£¬Õâ¸öº¯Êı¶¼»á±»µ÷ÓÃ
-        //ÀıÈçµ÷Õû´óĞ¡»òÒÆ¶¯´°¿Ú
-        //±£´æ¾ÉµÄWindowProc»Øµ÷º¯Êı£¬ÒòÎª±ØĞë´ÓĞÂ»Øµ÷º¯ÊıÖĞµ÷ÓÃËü
+        // Register (replace) WindowProc callbackã€‚æ¯å½“ä¸€ä¸ªçª—å£äº‹ä»¶è¢«è§¦å‘æ—¶ï¼Œè¿™ä¸ªå‡½æ•°éƒ½ä¼šè¢«è°ƒç”¨
+        //ä¾‹å¦‚è°ƒæ•´å¤§å°æˆ–ç§»åŠ¨çª—å£
+        //ä¿å­˜æ—§çš„WindowProcå›è°ƒå‡½æ•°ï¼Œå› ä¸ºå¿…é¡»ä»æ–°å›è°ƒå‡½æ•°ä¸­è°ƒç”¨å®ƒ
         wndProcDelegate = wndProc;
         newWndProcPtr = Marshal.GetFunctionPointerForDelegate(wndProcDelegate);
         oldWndProcPtr = SetWindowLong(unityHWnd, GWLP_WNDPROC, newWndProcPtr);
  
-        // ³õÊ¼»¯Íê³É
+        // åˆå§‹åŒ–å®Œæˆ
         started = true;
 #endif
 
     }
 
     /// <summary>
-    ///½«Ä¿±ê³¤¿í±ÈÉèÖÃÎª¸ø¶¨µÄ³¤¿í±È¡£
+    ///å°†ç›®æ ‡é•¿å®½æ¯”è®¾ç½®ä¸ºç»™å®šçš„é•¿å®½æ¯”ã€‚
     /// </summary>
-    /// <param name="newAspectWidth">¿í¸ß±ÈµÄĞÂ¿í¶È</param>
-    /// <param name="newAspectHeight">×İºá±ÈµÄĞÂ¸ß¶È</param>
-    /// <param name="apply">true£¬µ±Ç°´°¿Ú·Ö±æÂÊ½«Á¢¼´µ÷ÕûÒÔÆ¥ÅäĞÂµÄ×İºá±È false£¬ÔòÖ»ÔÚÏÂ´ÎÊÖ¶¯µ÷Õû´°¿Ú´óĞ¡Ê±Ö´ĞĞ´Ë²Ù×÷</param>
+    /// <param name="newAspectWidth">å®½é«˜æ¯”çš„æ–°å®½åº¦</param>
+    /// <param name="newAspectHeight">çºµæ¨ªæ¯”çš„æ–°é«˜åº¦</param>
+    /// <param name="apply">trueï¼Œå½“å‰çª—å£åˆ†è¾¨ç‡å°†ç«‹å³è°ƒæ•´ä»¥åŒ¹é…æ–°çš„çºµæ¨ªæ¯” falseï¼Œåˆ™åªåœ¨ä¸‹æ¬¡æ‰‹åŠ¨è°ƒæ•´çª—å£å¤§å°æ—¶æ‰§è¡Œæ­¤æ“ä½œ</param>
     public void SetAspectRatio(float newAspectWidth, float newAspectHeight, bool apply)
     {
-        //¼ÆËãĞÂµÄ×İºá±È
+        //è®¡ç®—æ–°çš„çºµæ¨ªæ¯”
         aspectRatioWidth = newAspectWidth;
         aspectRatioHeight = newAspectHeight;
         aspect = aspectRatioWidth / aspectRatioHeight;
 
-        // µ÷Õû·Ö±æÂÊÒÔÆ¥Åä³¤¿í±È(´¥·¢WindowProc»Øµ÷)
+        // è°ƒæ•´åˆ†è¾¨ç‡ä»¥åŒ¹é…é•¿å®½æ¯”(è§¦å‘WindowProcå›è°ƒ)
         if (apply)
         {
             Screen.SetResolution(Screen.width, Mathf.RoundToInt(Screen.width / aspect), Screen.fullScreen);
@@ -211,22 +211,22 @@ public class AspectRatioController : MonoBehaviour
     }
 
     /// <summary>
-    /// WindowProc»Øµ÷¡£Ó¦ÓÃ³ÌĞò¶¨ÒåµÄº¯Êı£¬ÓÃÀ´´¦Àí·¢ËÍµ½´°¿ÚµÄÏûÏ¢ 
+    /// WindowProcå›è°ƒã€‚åº”ç”¨ç¨‹åºå®šä¹‰çš„å‡½æ•°ï¼Œç”¨æ¥å¤„ç†å‘é€åˆ°çª—å£çš„æ¶ˆæ¯ 
     /// </summary>
-    /// <param name="msg">ÓÃÓÚ±êÊ¶ÊÂ¼şµÄÏûÏ¢</param>
-    /// <param name="wParam">¶îÍâµÄĞÅÏ¢ĞÅÏ¢¡£¸Ã²ÎÊıµÄÄÚÈİÈ¡¾öÓÚuMsg²ÎÊıµÄÖµ </param>
-    /// <param name="lParam">ÆäËûÏûÏ¢µÄĞÅÏ¢¡£¸Ã²ÎÊıµÄÄÚÈİÈ¡¾öÓÚuMsg²ÎÊıµÄÖµ </param>
+    /// <param name="msg">ç”¨äºæ ‡è¯†äº‹ä»¶çš„æ¶ˆæ¯</param>
+    /// <param name="wParam">é¢å¤–çš„ä¿¡æ¯ä¿¡æ¯ã€‚è¯¥å‚æ•°çš„å†…å®¹å–å†³äºuMsgå‚æ•°çš„å€¼ </param>
+    /// <param name="lParam">å…¶ä»–æ¶ˆæ¯çš„ä¿¡æ¯ã€‚è¯¥å‚æ•°çš„å†…å®¹å–å†³äºuMsgå‚æ•°çš„å€¼ </param>
     /// <returns></returns>
     IntPtr wndProc(IntPtr hWnd, uint msg, IntPtr wParam, IntPtr lParam)
     {
-        // ¼ì²éÏûÏ¢ÀàĞÍ
-        // resizeÊÂ¼ş
+        // æ£€æŸ¥æ¶ˆæ¯ç±»å‹
+        // resizeäº‹ä»¶
         if (msg == WM_SIZING)
         {
-            // »ñÈ¡´°¿Ú´óĞ¡½á¹¹Ìå
+            // è·å–çª—å£å¤§å°ç»“æ„ä½“
             RECT rc = (RECT)Marshal.PtrToStructure(lParam, typeof(RECT));
 
-            // ¼ÆËã´°¿Ú±ß¿òµÄ¿í¶ÈºÍ¸ß¶È
+            // è®¡ç®—çª—å£è¾¹æ¡†çš„å®½åº¦å’Œé«˜åº¦
             RECT windowRect = new RECT();
             GetWindowRect(unityHWnd, ref windowRect);
 
@@ -236,15 +236,15 @@ public class AspectRatioController : MonoBehaviour
             int borderWidth = windowRect.Right - windowRect.Left - (clientRect.Right - clientRect.Left);
             int borderHeight = windowRect.Bottom - windowRect.Top - (clientRect.Bottom - clientRect.Top);
 
-            // ÔÚÓ¦ÓÃ¿í¸ß±ÈÖ®Ç°É¾³ı±ß¿ò(°üÀ¨´°¿Ú±êÌâÀ¸)
+            // åœ¨åº”ç”¨å®½é«˜æ¯”ä¹‹å‰åˆ é™¤è¾¹æ¡†(åŒ…æ‹¬çª—å£æ ‡é¢˜æ )
             rc.Right -= borderWidth;
             rc.Bottom -= borderHeight;
 
-            // ÏŞÖÆ´°¿Ú´óĞ¡
+            // é™åˆ¶çª—å£å¤§å°
             int newWidth = Mathf.Clamp(rc.Right - rc.Left, minWidthPixel, maxWidthPixel);
             int newHeight = Mathf.Clamp(rc.Bottom - rc.Top, minHeightPixel, maxHeightPixel);
 
-            // ¸ù¾İ×İºá±ÈºÍ·½Ïòµ÷Õû´óĞ¡
+            // æ ¹æ®çºµæ¨ªæ¯”å’Œæ–¹å‘è°ƒæ•´å¤§å°
             switch (wParam.ToInt32())
             {
                 case WMSZ_LEFT:
@@ -281,28 +281,28 @@ public class AspectRatioController : MonoBehaviour
                     break;
             }
 
-            // ±£´æÊµ¼Ê·Ö±æÂÊ,²»°üÀ¨±ß½ç
+            // ä¿å­˜å®é™…åˆ†è¾¨ç‡,ä¸åŒ…æ‹¬è¾¹ç•Œ
             setWidth = rc.Right - rc.Left;
             setHeight = rc.Bottom - rc.Top;
 
-            // Ìí¼Ó±ß½ç
+            // æ·»åŠ è¾¹ç•Œ
             rc.Right += borderWidth;
             rc.Bottom += borderHeight;
 
-            // ´¥·¢·Ö±æÂÊ¸ü¸ÄÊÂ¼ş
+            // è§¦å‘åˆ†è¾¨ç‡æ›´æ”¹äº‹ä»¶
             resolutionChangedEvent.Invoke(setWidth, setHeight, Screen.fullScreen);
 
-            // »ØĞ´¸ü¸ÄµÄ´°¿Ú²ÎÊı
+            // å›å†™æ›´æ”¹çš„çª—å£å‚æ•°
             Marshal.StructureToPtr(rc, lParam, true);
         }
 
-        // µ÷ÓÃÔ­Ê¼µÄWindowProcº¯Êı
+        // è°ƒç”¨åŸå§‹çš„WindowProcå‡½æ•°
         return CallWindowProc(oldWndProcPtr, hWnd, msg, wParam, lParam);
     }
 
     void Update()
     {
-        // Èç¹û²»ÔÊĞíÈ«ÆÁ£¬Ôò×èÖ¹ÇĞ»»µ½È«ÆÁ
+        // å¦‚æœä¸å…è®¸å…¨å±ï¼Œåˆ™é˜»æ­¢åˆ‡æ¢åˆ°å…¨å±
         if (!allowFullscreen && Screen.fullScreen)
         {
             Screen.fullScreen = false;
@@ -310,11 +310,11 @@ public class AspectRatioController : MonoBehaviour
 
         if (Screen.fullScreen && !wasFullscreenLastFrame)
         {
-            //ÇĞ»»µ½È«ÆÁ¼ì²â,ÉèÖÃÎª×î´óÆÁÄ»·Ö±æÂÊ£¬Í¬Ê±±£³Ö³¤¿í±È
+            //åˆ‡æ¢åˆ°å…¨å±æ£€æµ‹,è®¾ç½®ä¸ºæœ€å¤§å±å¹•åˆ†è¾¨ç‡ï¼ŒåŒæ—¶ä¿æŒé•¿å®½æ¯”
             int height;
             int width;
 
-            //¸ù¾İµ±Ç°³¤¿í±ÈºÍÏÔÊ¾Æ÷µÄ±ÈÀı½øĞĞ±È½Ï£¬ÉÏÏÂ»ò×óÓÒÌí¼ÓºÚ±ß
+            //æ ¹æ®å½“å‰é•¿å®½æ¯”å’Œæ˜¾ç¤ºå™¨çš„æ¯”ä¾‹è¿›è¡Œæ¯”è¾ƒï¼Œä¸Šä¸‹æˆ–å·¦å³æ·»åŠ é»‘è¾¹
             bool blackBarsLeftRight = aspect < (float)pixelWidthOfCurrentScreen / pixelHeightOfCurrentScreen;
 
             if (blackBarsLeftRight)
@@ -333,13 +333,13 @@ public class AspectRatioController : MonoBehaviour
         }
         else if (!Screen.fullScreen && wasFullscreenLastFrame)
         {
-            // ´ÓÈ«ÆÁÇĞ»»µ½¼ì²âµ½µÄ´°¿Ú¡£ÉèÖÃÉÏÒ»¸ö´°¿ÚµÄ·Ö±æÂÊ¡£
+            // ä»å…¨å±åˆ‡æ¢åˆ°æ£€æµ‹åˆ°çš„çª—å£ã€‚è®¾ç½®ä¸Šä¸€ä¸ªçª—å£çš„åˆ†è¾¨ç‡ã€‚
             Screen.SetResolution(setWidth, setHeight, false);
             resolutionChangedEvent.Invoke(setWidth, setHeight, false);
         }
         else if (!Screen.fullScreen && setWidth != -1 && setHeight != -1 && (Screen.width != setWidth || Screen.height != setHeight))
         {
-            //¸ù¾İ¸ß¶ÈÉèÖÃ¿í¶È£¬ÒòÎªAero Snap²»»á´¥·¢WM_SIZING¡£
+            //æ ¹æ®é«˜åº¦è®¾ç½®å®½åº¦ï¼Œå› ä¸ºAero Snapä¸ä¼šè§¦å‘WM_SIZINGã€‚
             setHeight = Screen.height;
             setWidth = Mathf.RoundToInt(Screen.height * aspect);
 
@@ -348,17 +348,17 @@ public class AspectRatioController : MonoBehaviour
         }
         else if (!Screen.fullScreen)
         {
-            // ±£´æµ±Ç°ÆÁÄ»µÄ·Ö±æÂÊ
-            // ÏÂ´ÎÇĞ»»µ½È«ÆÁÊ±£¬´Ë·Ö±æÂÊ½«±»ÉèÖÃÎª´°¿Ú·Ö±æÂÊ
-            // Ö»ÓĞ¸ß¶È£¬Èç¹ûĞèÒª£¬¿í¶È½«¸ù¾İ¸ß¶ÈºÍ³¤¿í±ÈÉèÖÃ£¬ÒÔÈ·±£³¤¿í±È±£³ÖÔÚÈ«ÆÁÄ£Ê½
+            // ä¿å­˜å½“å‰å±å¹•çš„åˆ†è¾¨ç‡
+            // ä¸‹æ¬¡åˆ‡æ¢åˆ°å…¨å±æ—¶ï¼Œæ­¤åˆ†è¾¨ç‡å°†è¢«è®¾ç½®ä¸ºçª—å£åˆ†è¾¨ç‡
+            // åªæœ‰é«˜åº¦ï¼Œå¦‚æœéœ€è¦ï¼Œå®½åº¦å°†æ ¹æ®é«˜åº¦å’Œé•¿å®½æ¯”è®¾ç½®ï¼Œä»¥ç¡®ä¿é•¿å®½æ¯”ä¿æŒåœ¨å…¨å±æ¨¡å¼
             pixelHeightOfCurrentScreen = Screen.currentResolution.height;
             pixelWidthOfCurrentScreen = Screen.currentResolution.width;
         }
 
-        //±£´æÏÂÒ»Ö¡µÄÈ«ÆÁ×´Ì¬
+        //ä¿å­˜ä¸‹ä¸€å¸§çš„å…¨å±çŠ¶æ€
         wasFullscreenLastFrame = Screen.fullScreen;
 
-        // µ±ÓÎÏ·´°¿Úµ÷Õû´óĞ¡Ê±£¬ÔÚ±à¼­Æ÷ÖĞ´¥·¢·Ö±æÂÊ¸Ä±äÊÂ¼ş¡£
+        // å½“æ¸¸æˆçª—å£è°ƒæ•´å¤§å°æ—¶ï¼Œåœ¨ç¼–è¾‘å™¨ä¸­è§¦å‘åˆ†è¾¨ç‡æ”¹å˜äº‹ä»¶ã€‚
 #if UNITY_EDITOR
         if (Screen.width != setWidth || Screen.height != setHeight)
         {
@@ -370,16 +370,16 @@ public class AspectRatioController : MonoBehaviour
     }
 
     /// <summary>
-    /// µ÷ÓÃSetWindowLong32»òSetWindowLongPtr64£¬È¡¾öÓÚ¿ÉÖ´ĞĞÎÄ¼şÊÇ32Î»»¹ÊÇ64Î»¡£
-    /// ÕâÑù£¬ÎÒÃÇ¾Í¿ÉÒÔÍ¬Ê±¹¹½¨32Î»ºÍ64Î»µÄ¿ÉÖ´ĞĞÎÄ¼ş¶ø²»»áÓöµ½ÎÊÌâ¡£
+    /// è°ƒç”¨SetWindowLong32æˆ–SetWindowLongPtr64ï¼Œå–å†³äºå¯æ‰§è¡Œæ–‡ä»¶æ˜¯32ä½è¿˜æ˜¯64ä½ã€‚
+    /// è¿™æ ·ï¼Œæˆ‘ä»¬å°±å¯ä»¥åŒæ—¶æ„å»º32ä½å’Œ64ä½çš„å¯æ‰§è¡Œæ–‡ä»¶è€Œä¸ä¼šé‡åˆ°é—®é¢˜ã€‚
     /// </summary>
     /// <param name="hWnd">The window handle.</param>
-    /// <param name="nIndex">ÒªÉèÖÃµÄÖµµÄ´ÓÁã¿ªÊ¼µÄÆ«ÒÆÁ¿</param>
+    /// <param name="nIndex">è¦è®¾ç½®çš„å€¼çš„ä»é›¶å¼€å§‹çš„åç§»é‡</param>
     /// <param name="dwNewLong">The replacement value.</param>
-    /// <returns>·µ»ØÖµÊÇÖ¸¶¨Æ«ÒÆÁ¿µÄÇ°Ò»¸öÖµ¡£·ñÔòÁã.</returns>
+    /// <returns>è¿”å›å€¼æ˜¯æŒ‡å®šåç§»é‡çš„å‰ä¸€ä¸ªå€¼ã€‚å¦åˆ™é›¶.</returns>
     private static IntPtr SetWindowLong(IntPtr hWnd, int nIndex, IntPtr dwNewLong)
     {
-        //32Î»ÏµÍ³
+        //32ä½ç³»ç»Ÿ
         if (IntPtr.Size == 4)
         {
             return SetWindowLong32(hWnd, nIndex, dwNewLong);
@@ -388,16 +388,16 @@ public class AspectRatioController : MonoBehaviour
     }
 
     /// <summary>
-    /// ÍË³öÊ±µ÷ÓÃ¡£ ·µ»Øfalse½«ÖĞÖ¹²¢Ê¹Ó¦ÓÃ³ÌĞò±£³Ö»î¶¯¡£True»áÈÃËüÍË³ö¡£
+    /// é€€å‡ºæ—¶è°ƒç”¨ã€‚ è¿”å›falseå°†ä¸­æ­¢å¹¶ä½¿åº”ç”¨ç¨‹åºä¿æŒæ´»åŠ¨ã€‚Trueä¼šè®©å®ƒé€€å‡ºã€‚
     /// </summary>
     /// <returns></returns>
     private bool ApplicationWantsToQuit()
     {
-        //½öÔÊĞíÔÚÓ¦ÓÃ³ÌĞò³õÊ¼»¯ºóÍË³ö¡£
+        //ä»…å…è®¸åœ¨åº”ç”¨ç¨‹åºåˆå§‹åŒ–åé€€å‡ºã€‚
         if (!started)
             return false;
 
-        //ÑÓ³ÙÍË³ö£¬clear up
+        //å»¶è¿Ÿé€€å‡ºï¼Œclear up
         if (!quitStarted)
         {
             StartCoroutine("DelayedQuit");
@@ -408,12 +408,12 @@ public class AspectRatioController : MonoBehaviour
     }
 
     /// <summary>
-    /// »Ö¸´¾ÉµÄWindowProc»Øµ÷£¬È»ºóÍË³ö¡£
+    /// æ¢å¤æ—§çš„WindowProcå›è°ƒï¼Œç„¶åé€€å‡ºã€‚
     /// </summary>
     IEnumerator DelayedQuit()
     {
 
-        // ÖØĞÂÉèÖÃ¾ÉµÄWindowProc»Øµ÷,Èç¹û¼ì²âµ½WM_CLOSE,Õâ½«ÔÚĞÂµÄ»Øµ÷±¾ÉíÖĞÍê³É, 64Î»Ã»ÎÊÌâ£¬32Î»¿ÉÄÜ»áÔì³ÉÉÁÍË
+        // é‡æ–°è®¾ç½®æ—§çš„WindowProcå›è°ƒ,å¦‚æœæ£€æµ‹åˆ°WM_CLOSE,è¿™å°†åœ¨æ–°çš„å›è°ƒæœ¬èº«ä¸­å®Œæˆ, 64ä½æ²¡é—®é¢˜ï¼Œ32ä½å¯èƒ½ä¼šé€ æˆé—ªé€€
 
         SetWindowLong(unityHWnd, GWLP_WNDPROC, oldWndProcPtr);
 
