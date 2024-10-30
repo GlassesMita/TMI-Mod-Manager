@@ -7,6 +7,18 @@
 ![Visual Studio](https://img.shields.io/badge/Visual_Studio-5C2D91?style=for-the-badge&logo=visual%20studio&logoColor=white)
 ## 项目简介
 TMI Mod Manager 是一个用于管理和组织夜雀食堂的 MOD 的工具。它旨在为用户提供一个简便的界面，以便轻松添加、删除和管理游戏中的模组。
+如果有什么建议想法，可以加入qq群进行讨论：470175141
+
+<details>
+<summary>⭐点⭐此⭐查⭐看⭐精⭐美⭐宣⭐传⭐</summary>
+
+！隆重介绍！目前已知唯一的雀食mod交流聚集地  
+470175141 470175141 470175141（重要的事情说三遍）  
+不管你是程序、美工、乐师、策划（这个需要吗？），亦或是想进来学习交流，又或者是想一睹雀食mod的风采的普通玩家，都可以加入这个群聊！
+
+![化学实验室](https://raw.githubusercontent.com/UndefinedMarisa/TMI-Mod-Manager/main/Assets/Images/%E5%8C%96%E5%AD%A6%E5%AE%9E%E9%AA%8C%E5%AE%A4.jpg)
+
+</details>
 
 > [!IMPORTANT]
 > **免责声明**
