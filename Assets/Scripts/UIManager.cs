@@ -1,35 +1,37 @@
 using UnityEngine;
 using UnityEngine.UI;
 using System.IO;
+using UnityEngine.SceneManagement;
 
 public class UIManager : MonoBehaviour
 {
     public GameObject fileButtonPrefab;
     public Transform fileListContainer;
     public Text jsonContentText;
-    public Button deleteButton; // ¶ÀÁ¢µÄÉ¾³ı°´Å¥
-    public Button refreshButton; // ¶ÀÁ¢µÄË¢ĞÂ°´Å¥
-    public GameObject confirmDialog; // È·ÈÏµ¯´°
-    public Text confirmDialogText; // È·ÈÏµ¯´°ÎÄ±¾
-    public Button confirmButton; // È·ÈÏ°´Å¥
-    public Button cancelButton; // È¡Ïû°´Å¥
+    public Button deleteButton; // ç‹¬ç«‹çš„åˆ é™¤æŒ‰é’®
+    public Button refreshButton; // ç‹¬ç«‹çš„åˆ·æ–°æŒ‰é’®
+    public GameObject confirmDialog; // ç¡®è®¤å¼¹çª—
+    public Text confirmDialogText; // ç¡®è®¤å¼¹çª—æ–‡æœ¬
+    public Button confirmButton; // ç¡®è®¤æŒ‰é’®
+    public Button cancelButton; // å–æ¶ˆæŒ‰é’®
+    public CurrentSceneName currentSceneName;
 
-    private string filePathToDelete; // ÓÃÓÚ´æ´¢´ıÉ¾³ıµÄÎÄ¼şÂ·¾¶
-    private string[] filesToIncludeToDelete; // ÓÃÓÚ´æ´¢´ıÉ¾³ıµÄ¹ØÁªÎÄ¼ş
-    private string disableFilePathToDelete; // ÓÃÓÚ´æ´¢´ıÉ¾³ıµÄ .DISABLE ÎÄ¼şÂ·¾¶
+    private string filePathToDelete; // ç”¨äºå­˜å‚¨å¾…åˆ é™¤çš„æ–‡ä»¶è·¯å¾„
+    private string[] filesToIncludeToDelete; // ç”¨äºå­˜å‚¨å¾…åˆ é™¤çš„å…³è”æ–‡ä»¶
+    private string disableFilePathToDelete; // ç”¨äºå­˜å‚¨å¾…åˆ é™¤çš„ .DISABLE æ–‡ä»¶è·¯å¾„
 
     void Start()
     {
         if (refreshButton == null || deleteButton == null || confirmButton == null || cancelButton == null || confirmDialog == null || confirmDialogText == null)
         {
-            Debug.LogError("UIManager: One or more references are not set.");
+            Debug.LogError("UIManager: æœ‰ä¸€ä¸ªæˆ–å¤šä¸ªå®ä¾‹æœªè®¾ç½®");
             return;
         }
 
-        refreshButton.onClick.AddListener(RefreshFileList); // È·±£Õâ¸ö°´Å¥½öÓÃÓÚË¢ĞÂ¹¦ÄÜ
+        refreshButton.onClick.AddListener(RefreshFileList); // ç¡®ä¿è¿™ä¸ªæŒ‰é’®ä»…ç”¨äºåˆ·æ–°åŠŸèƒ½
         confirmButton.onClick.AddListener(DeleteConfirmed);
         cancelButton.onClick.AddListener(HideConfirmDialog);
-        RefreshFileList(); // ³õÊ¼»¯Ê±Ë¢ĞÂÒ»´ÎÎÄ¼şÁĞ±í
+        RefreshFileList(); // åˆå§‹åŒ–æ—¶åˆ·æ–°ä¸€æ¬¡æ–‡ä»¶åˆ—è¡¨
     }
 
     public void UpdateUIWithFiles(string[] jsonFiles)
@@ -51,19 +53,19 @@ public class UIManager : MonoBehaviour
 
         if (buttonText == null || toggle == null)
         {
-            Debug.LogError("UIManager: Missing UI components on prefab. Please ensure Text and Toggle are correctly set.");
+            Debug.LogError("UIManager: ç¼ºå¤±é¢„åˆ¶ä»¶ä¸Šçš„ UI æ§ä»¶. è¯·ç¡®ä¿åœ¨ Button ä¸­è®¾ç½®äº† Text å’Œ Toggle æ§ä»¶");
             return;
         }
 
-        buttonText.text = pluginInfo.pluginName; // ÉèÖÃ°´Å¥ÎÄ±¾Îª pluginName
+        buttonText.text = pluginInfo.pluginName; // è®¾ç½®æŒ‰é’®æ–‡æœ¬ä¸º pluginName
 
-        // ¼ì²éÄ¿Â¼ÏÂÊÇ·ñ´æÔÚÍ¬Ãû .DISABLE ÎÄ¼ş
-        string disableFilePath = filePath + ".DISABLE";
-        toggle.isOn = !File.Exists(disableFilePath); // Èç¹û´æÔÚ .DISABLE ÎÄ¼ş£¬Toggle ÉèÖÃÎª Off£¬·ñÔòÉèÖÃÎª On
+        // æ£€æŸ¥ç›®å½•ä¸‹æ˜¯å¦å­˜åœ¨åŒå .DISABLE æ–‡ä»¶
+        string disableFilePath = filePath + ".Disabled";
+        toggle.isOn = !File.Exists(disableFilePath); // å¦‚æœå­˜åœ¨ .DISABLE æ–‡ä»¶ï¼ŒToggle è®¾ç½®ä¸º Offï¼Œå¦åˆ™è®¾ç½®ä¸º On
 
         buttonObj.GetComponent<Button>().onClick.AddListener(() => ShowJsonContent(filePath));
 
-        // Ìí¼Ó Toggle ÊÂ¼ş´¦Àí
+        // æ·»åŠ  Toggle äº‹ä»¶å¤„ç†
         toggle.onValueChanged.AddListener((bool isOn) =>
         {
             if (isOn)
@@ -82,7 +84,7 @@ public class UIManager : MonoBehaviour
             }
         });
 
-        // Ìí¼ÓÉ¾³ıÎÄ¼ş°´Å¥ÊÂ¼ş
+        // æ·»åŠ åˆ é™¤æ–‡ä»¶æŒ‰é’®äº‹ä»¶
         deleteButton.onClick.AddListener(() => ShowConfirmDialog(filePath, pluginInfo.fileInclude, disableFilePath));
     }
 
@@ -91,7 +93,7 @@ public class UIManager : MonoBehaviour
         filePathToDelete = filePath;
         filesToIncludeToDelete = filesToInclude;
         disableFilePathToDelete = disableFilePath;
-        confirmDialogText.text = "Are you sure you want to delete this file?";
+        confirmDialogText.text = "ä½ ç¡®è®¤è¦åˆ é™¤è¿™ä¸ªæ–‡ä»¶å—ï¼Ÿ";
         confirmDialog.SetActive(true);
     }
 
@@ -108,13 +110,13 @@ public class UIManager : MonoBehaviour
 
     void DeleteJsonFile(string jsonFilePath, string[] filesToInclude, string disableFilePath)
     {
-        // É¾³ı JSON ÎÄ¼ş
+        // åˆ é™¤ JSON æ–‡ä»¶
         if (File.Exists(jsonFilePath))
         {
             File.Delete(jsonFilePath);
         }
 
-        // É¾³ı°üº¬µÄÎÄ¼ş
+        // åˆ é™¤åŒ…å«çš„æ–‡ä»¶
         if (filesToInclude != null)
         {
             foreach (string includedFile in filesToInclude)
@@ -127,25 +129,26 @@ public class UIManager : MonoBehaviour
             }
         }
 
-        // É¾³ı .DISABLE ÎÄ¼ş
+        // åˆ é™¤ .DISABLE æ–‡ä»¶
         if (File.Exists(disableFilePath))
         {
             File.Delete(disableFilePath);
         }
 
-        // Ë¢ĞÂÎÄ¼şÁĞ±í
-        RefreshFileList();
+        // åˆ·æ–°æ–‡ä»¶åˆ—è¡¨
+        // RefreshFileList();
+        SceneManager.LoadScene(currentSceneName.sceneName);
     }
 
     public void RefreshFileList()
     {
-        // Çå¿Õµ±Ç°ÄÚÈİ
+        // æ¸…ç©ºå½“å‰å†…å®¹
         foreach (Transform child in fileListContainer)
         {
             Destroy(child.gameObject);
         }
 
-        // ÖØĞÂ¶ÁÈ¡ÎÄ¼şÁĞ±í
+        // é‡æ–°è¯»å–æ–‡ä»¶åˆ—è¡¨
         string[] jsonFiles = Directory.GetFiles(Application.dataPath, "*.json");
         UpdateUIWithFiles(jsonFiles);
     }

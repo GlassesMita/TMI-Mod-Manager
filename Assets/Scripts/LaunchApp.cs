@@ -7,12 +7,19 @@ using System;
 
 public class LaunchApp : MonoBehaviour
 {
-    [DllImport("shell32.dll", CharSet = CharSet.Unicode)]
-    public static extern int ShellExecute(IntPtr hwnd, string lpszOp, string lpszFile,
-                                    string lpszParams, string lpszDir, int FsShowCmd);
+    public bool isSteamRelease = true;
+    public string steamUrl;
+    public string exePath = @"";
 
-    public void LaunchApplication(string exePath)
+    public void LaunchApplication()
     {
-        ShellExecute(IntPtr.Zero, "open", exePath, "", "", 1);
+        if(isSteamRelease == true)
+        {
+            Application.OpenURL(steamUrl);
+        }
+        else
+        {
+            Process.Start(exePath);
+        }
     }
 }
