@@ -19,7 +19,7 @@ TMI Mod Manager 是一个用于管理和组织夜雀食堂的 MOD 的工具。�
 [470175141](https://qm.qq.com/q/ZjHPtumekw) [470175141](https://qm.qq.com/q/ZjHPtumekw) [470175141](https://qm.qq.com/q/ZjHPtumekw)（重要的事情说三遍）  
 不管你是程序、美工、乐师、策划（这个需要吗？），亦或是想进来学习交流，又或者是想一睹雀食mod的风采的普通玩家，都可以加入这个群聊！
 
-![化学实验室](https://raw.githubusercontent.com/UndefinedMarisa/TMI-Mod-Manager/main/Assets/Images/%E5%8C%96%E5%AD%A6%E5%AE%9E%E9%AA%8C%E5%AE%A4.jpg)
+![化学实验室](https://raw.githubusercontent.com/GlassesMita/TMI-Mod-Manager/main/Assets/Images/%E5%8C%96%E5%AD%A6%E5%AE%9E%E9%AA%8C%E5%AE%A4.jpg)
 
 </details>
 
@@ -57,15 +57,18 @@ TMI Mod Manager 是一个用于管理和组织夜雀食堂的 MOD 的工具。�
 - **构建方式**: Mono
 - **架构**: x64
 
-## 安装与编辑
+## 构建并运行
 
 1. 克隆仓库到本地：
 
     ```bash
-    git clone https://github.com/UndefinedMarisa/TMI-Mod-Manager.git
+    git clone https://github.com/GlassesMita/TMI-Mod-Manager.git
     ```
 
 2. 打开 Unity Hub 并添加项目：
     - 点击 "Add" 按钮并选择克隆的项目文件夹。
 3. 打开项目并运行：
-    - 在 Unity 编辑器中打开项目，点击 "Play" 按钮运行项目。
+    - 在 Unity 编辑器中打开项目，点击 "File" → "Build Settings" 菜单
+    - 点击 "Build" 右侧的 ▼，然后选择 "Clean Build"
+    - 选择生成输出文件夹，建议位于 SteamLibrary/SteamApps/Common/Touhou Mystia Izakaya/Mod Manager
+    - 生成完成后运行 TMI Mod Manager.exe
