@@ -12,7 +12,7 @@ PlayerSettings:
   targetDevice: 2
   useOnDemandResources: 0
   accelerometerFrequency: 60
-  companyName: Destoryer
+  companyName: KKStudio
   productName: TMI Mod Manager
   defaultCursor: {fileID: 0}
   cursorHotspot: {x: 0, y: 0}
@@ -154,7 +154,8 @@ PlayerSettings:
   resetResolutionOnWindowResize: 0
   androidSupportedAspectRatio: 1
   androidMaxAspectRatio: 2.1
-  applicationIdentifier: {}
+  applicationIdentifier:
+    Standalone: com.KKStudio.TMI-Mod-Manager
   buildNumber:
     Standalone: 0
     iPhone: 0
@@ -634,7 +635,8 @@ PlayerSettings:
   scriptingDefineSymbols: {}
   additionalCompilerArguments: {}
   platformArchitecture: {}
-  scriptingBackend: {}
+  scriptingBackend:
+    Standalone: 0
   il2cppCompilerConfiguration: {}
   managedStrippingLevel:
     EmbeddedLinux: 1
@@ -652,7 +654,7 @@ PlayerSettings:
     tvOS: 1
   incrementalIl2cppBuild: {}
   suppressCommonWarnings: 1
-  allowUnsafeCode: 0
+  allowUnsafeCode: 1
   useDeterministicCompilation: 1
   enableRoslynAnalyzers: 1
   additionalIl2CppArgs: 
@@ -733,10 +735,10 @@ PlayerSettings:
   apiCompatibilityLevel: 6
   activeInputHandler: 2
   windowsGamepadBackendHint: 0
-  cloudProjectId: 2a1ad881-f17a-4f85-b25a-918dd373213d
+  cloudProjectId: 52e84109-28ac-4483-bb72-65a77750aab1
   framebufferDepthMemorylessMode: 0
   qualitySettingsNames: []
-  projectName: TMI Mod Manager 2024-10-20_10-02-37
+  projectName: TMI Mod Manager 2025-05-14_13-26-23
   organizationId: scarlet-devil-mansion
   cloudEnabled: 0
   legacyClampBlendShapeWeights: 0

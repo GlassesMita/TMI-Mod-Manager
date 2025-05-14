@@ -8,4 +8,19 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Title.unity
     guid: 81709d2de852b7f4fa8c6eda8efd569e
+  - enabled: 1
+    path: Assets/Scenes/SampleScene.unity
+    guid: 8c9cfa26abfee488c85f1582747f6a02
+  - enabled: 1
+    path: Assets/Scenes/Splash.unity
+    guid: 465319037976e234491e84e8fd92dc39
+  - enabled: 1
+    path: Assets/Scenes/TestCard_SurroundSound.unity
+    guid: a98df1a4b6f0c9d4aa4f80b80afc004c
+  - enabled: 1
+    path: "Assets/Scenes/\u6B7B\u306B\u305F\u3044.unity"
+    guid: 4a27525e17c507946a7485ed6d01025f
+  - enabled: 1
+    path: Assets/Scenes/OOMTest.unity
+    guid: 6028a98781f07894484b905ff0460c77
   m_configObjects: {}

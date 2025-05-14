@@ -1,0 +1,11 @@
+{
+    "pluginName": "显示控制台",
+    "author": "Nephthys",
+    "version": "0.0.1",
+    "fileName": "TML_Console.dll",
+    "pluginInfo": "为玩家显示了只有在内测时才可以自由访问的控制台",
+    "fileInclude":
+    [
+        "TML_Console.dll"
+    ]
+}

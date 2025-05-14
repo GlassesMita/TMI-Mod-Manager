@@ -2,6 +2,7 @@ using UnityEngine;
 using System.IO;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using System.Linq; // 添加了 System.Linq 命名空间以使用 Where 方法
 
 public class FileLoader : MonoBehaviour
 {
@@ -15,6 +16,9 @@ public class FileLoader : MonoBehaviour
     {
         directoryPath = Application.dataPath + directoryPath;
         string[] jsonFiles = Directory.GetFiles(directoryPath, "*.json");
+
+        // 过滤掉 Data 目录下的文件
+        jsonFiles = jsonFiles.Where(file => !file.Contains("./" + Application.productName +"/")).ToArray();
 
         if (uiManager != null)
         {
@@ -37,11 +41,8 @@ public class FileLoader : MonoBehaviour
                 // 设置 Text 的值
                 statusText.text = "空空如也";
                 // 添加 Text 到 Canvas 下，或者你可以设置它的位置
-                foreach (Transform child in uiManager.fileListContainer)
-                {
-                    statusText.transform.SetParent(uiManager.fileListContainer, false);
-                }
-                
+                statusText.transform.SetParent(uiManager.fileListContainer, false);
+
             }
             else
             {

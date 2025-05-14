@@ -9,7 +9,6 @@ public class UserSettings : MonoBehaviour
     public GameObject settingPanel;
     public GameObject exePathInputField;
     public Toggle toggle; // 假设你有一个 Toggle 组件用于控制显示
-    public LaunchApp isSteamRelease;
 
     // 假设 JSON 文件的路径
     private string jsonFilePath = @"";
@@ -21,6 +20,7 @@ public class UserSettings : MonoBehaviour
     // 加载并解析 JSON 文件
         LoadUserSettings();
         Debug.Log("User Preferences JSON file: " + jsonFilePath);
+        toggle.enabled = true;
     }
 
     public void OpenSettingPanel()

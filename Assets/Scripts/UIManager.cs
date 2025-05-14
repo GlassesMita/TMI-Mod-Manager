@@ -2,12 +2,14 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.IO;
 using UnityEngine.SceneManagement;
+using System.Linq;
 
 public class UIManager : MonoBehaviour
 {
     public GameObject fileButtonPrefab;
     public Transform fileListContainer;
     public Text jsonContentText;
+    public Text modNameText;
     public Button deleteButton; // 独立的删除按钮
     public Button refreshButton; // 独立的刷新按钮
     public GameObject confirmDialog; // 确认弹窗
@@ -40,6 +42,8 @@ public class UIManager : MonoBehaviour
         {
             CreateFileButton(file);
         }
+        // 过滤掉 Data 目录下的文件
+        jsonFiles = jsonFiles.Where(file => !file.Contains("./" + Application.productName + "/")).ToArray();
     }
 
     void CreateFileButton(string filePath)
@@ -138,6 +142,7 @@ public class UIManager : MonoBehaviour
         // 刷新文件列表
         // RefreshFileList();
         SceneManager.LoadScene(currentSceneName.sceneName);
+        RefreshFileList();
     }
 
     public void RefreshFileList()
@@ -158,6 +163,7 @@ public class UIManager : MonoBehaviour
         string jsonContent = File.ReadAllText(filePath);
         PluginInfo pluginInfo = JsonUtility.FromJson<PluginInfo>(jsonContent);
         string includedFiles = pluginInfo.fileInclude != null ? string.Join(", ", pluginInfo.fileInclude) : "None";
-        jsonContentText.text = $"Plugin Name: {pluginInfo.pluginName}\nAuthor: {pluginInfo.author}\nVersion: {pluginInfo.version}\nIncluded Files: {includedFiles}";
+        modNameText.text = $"{pluginInfo.pluginName}";
+        jsonContentText.text = $"Author: {pluginInfo.author}\nVersion: {pluginInfo.version}\nIncluded Files: {includedFiles}\nFile Path: {filePath}";
     }
 }
