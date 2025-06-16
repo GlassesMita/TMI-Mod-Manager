@@ -735,11 +735,11 @@ PlayerSettings:
   apiCompatibilityLevel: 6
   activeInputHandler: 2
   windowsGamepadBackendHint: 0
-  cloudProjectId: 52e84109-28ac-4483-bb72-65a77750aab1
+  cloudProjectId: 97fd54ea-2c78-4c45-b252-cb0df9d6ba2a
   framebufferDepthMemorylessMode: 0
   qualitySettingsNames: []
-  projectName: TMI Mod Manager 2025-05-14_13-26-23
-  organizationId: scarlet-devil-mansion
+  projectName: TMI Mod Manager
+  organizationId: finalize-fantasy
   cloudEnabled: 0
   legacyClampBlendShapeWeights: 0
   playerDataPath: 

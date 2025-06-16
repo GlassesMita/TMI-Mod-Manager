@@ -9,7 +9,7 @@ public class QuitApp : MonoBehaviour
         Application.Quit();
     }
 
-    public void ÍË³öÓ¦ÓÃ()
+    public void é€€å‡ºåº”ç”¨()
     {
         Application.Quit();
     }

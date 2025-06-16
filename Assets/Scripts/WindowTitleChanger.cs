@@ -1,25 +1,28 @@
 using System;
 using System.Runtime.InteropServices;
 using UnityEngine;
+using System.Diagnostics;
 
 public class WindowTitleChanger : MonoBehaviour
 {
     public string windowTitle;
-    // µ¼ÈëWindows APIº¯Êı
-    [DllImport("user32.dll", EntryPoint = "FindWindow")]
-    public static extern IntPtr FindWindow(string className, string windowName);
+    public string processName;
 
     [DllImport("user32.dll", EntryPoint = "SetWindowText")]
     public static extern bool SetWindowText(IntPtr hwnd, string lpString);
 
     void Update()
     {
-        // ÕâÀï¼ÙÉèÄãÏëÒª²éÕÒµÄ´°¿Ú±êÌâÊÇ"Old Window Title"
-        // ²¢ÇÒÄãÏë½«±êÌâĞŞ¸ÄÎª"New Window Title"
-        IntPtr windowPtr = FindWindow(null, windowTitle);
-        if (windowPtr != IntPtr.Zero)
+        // æŸ¥æ‰¾æ‰€æœ‰æŒ‡å®šè¿›ç¨‹åçš„è¿›ç¨‹
+        Process[] processes = Process.GetProcessesByName(processName);
+        foreach (Process proc in processes)
         {
-            SetWindowText(windowPtr, "Modded " + windowTitle);
+            IntPtr hwnd = proc.MainWindowHandle;
+            if (hwnd != IntPtr.Zero && proc.MainWindowTitle == windowTitle)
+            {
+                SetWindowText(hwnd, "Modded " + windowTitle);
+                return; // ä¿®æ”¹åç«‹å³è·³å‡ºæ–¹æ³•ä½“
+            }
         }
     }
 }
