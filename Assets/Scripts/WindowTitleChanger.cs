@@ -13,6 +13,7 @@ public class WindowTitleChanger : MonoBehaviour
 
     void Update()
     {
+
         // 查找所有指定进程名的进程
         Process[] processes = Process.GetProcessesByName(processName);
         foreach (Process proc in processes)
@@ -20,7 +21,7 @@ public class WindowTitleChanger : MonoBehaviour
             IntPtr hwnd = proc.MainWindowHandle;
             if (hwnd != IntPtr.Zero && proc.MainWindowTitle == windowTitle)
             {
-                SetWindowText(hwnd, "Modded " + windowTitle);
+                SetWindowText(hwnd, windowTitle);
                 return; // 修改后立即跳出方法体
             }
         }

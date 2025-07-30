@@ -3884,6 +3884,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   windowTitle: Touhou Mystia Izakaya
+  processName: 
 --- !u!114 &733882139
 MonoBehaviour:
   m_ObjectHideFlags: 0
