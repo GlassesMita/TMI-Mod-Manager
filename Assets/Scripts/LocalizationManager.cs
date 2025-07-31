@@ -50,7 +50,16 @@ public class LocalizationManager : MonoBehaviour
         else
         {
             IniFileReader localizedManager = new IniFileReader(Path.Combine(Application.streamingAssetsPath, "Localization", languageCode + ".ini"));
-            textComponent.text = localizedManager.GetValue("Localization", value);
+            string textContent = localizedManager.GetValue("Localization", value);
+            if (textContent == null || textContent == "")
+            {
+                Debug.LogError("Text content is null! Using alternative text instead.");
+                textComponent.text = alterText;
+            }
+            else
+            {
+                textComponent.text = textContent;
+            }
         }
 
     }

@@ -8,16 +8,16 @@ public class UserSettings : MonoBehaviour
 {
     public GameObject settingPanel;
     public GameObject exePathInputField;
-    public Toggle toggle; // ¼ÙÉèÄãÓĞÒ»¸ö Toggle ×é¼şÓÃÓÚ¿ØÖÆÏÔÊ¾
+    public Toggle toggle; // å‡è®¾ä½ æœ‰ä¸€ä¸ª Toggle ç»„ä»¶ç”¨äºæ§åˆ¶æ˜¾ç¤º
 
-    // ¼ÙÉè JSON ÎÄ¼şµÄÂ·¾¶
+    // å‡è®¾ JSON æ–‡ä»¶çš„è·¯å¾„
     private string jsonFilePath = @"";
 
     // Start is called before the first frame update
     void Start()
     {
         jsonFilePath = Application.dataPath + @"/Config/UserSettings.json";
-    // ¼ÓÔØ²¢½âÎö JSON ÎÄ¼ş
+    // åŠ è½½å¹¶è§£æ JSON æ–‡ä»¶
         LoadUserSettings();
         Debug.Log("User Preferences JSON file: " + jsonFilePath);
         toggle.enabled = true;
@@ -35,7 +35,7 @@ public class UserSettings : MonoBehaviour
 
     public void DisplayExePathInputField()
     {
-        // Ê¹ÓÃ´Ó JSON ÎÄ¼şÖĞ½âÎöµÄ²¼¶ûÖµ
+        // ä½¿ç”¨ä» JSON æ–‡ä»¶ä¸­è§£æçš„å¸ƒå°”å€¼
         if (isSteamReleaseData.isSteamRelease == true)
         {
             exePathInputField.SetActive(false);
