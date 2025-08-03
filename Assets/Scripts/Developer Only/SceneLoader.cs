@@ -10,23 +10,23 @@ public class SceneLoader : MonoBehaviour
 
     private void Start()
     {
-        // »ñÈ¡ Assets/Scenes ÏÂµÄËùÓĞ³¡¾°ÎÄ¼ş
+        // è·å– Assets/Scenes ä¸‹çš„æ‰€æœ‰åœºæ™¯æ–‡ä»¶
         string[] scenePaths = GetScenePaths();
-        // ½«³¡¾°ÎÄ¼şÃûÌí¼Óµ½ Dropdown ÖĞ
+        // å°†åœºæ™¯æ–‡ä»¶åæ·»åŠ åˆ° Dropdown ä¸­
         PopulateDropdown(scenePaths);
 
-        // ÉèÖÃ°´Å¥µÄµã»÷ÊÂ¼ş
+        // è®¾ç½®æŒ‰é’®çš„ç‚¹å‡»äº‹ä»¶
         loadButton.onClick.AddListener(OnLoadButtonClicked);
     }
 
-    // »ñÈ¡ Assets/Scenes ÏÂµÄËùÓĞ³¡¾°ÎÄ¼şÂ·¾¶
+    // è·å– Assets/Scenes ä¸‹çš„æ‰€æœ‰åœºæ™¯æ–‡ä»¶è·¯å¾„
     private string[] GetScenePaths()
     {
-        // »ñÈ¡ "Assets/Scenes" ÎÄ¼ş¼ĞÏÂµÄËùÓĞ³¡¾°ÎÄ¼ş
+        // è·å– "Assets/Scenes" æ–‡ä»¶å¤¹ä¸‹çš„æ‰€æœ‰åœºæ™¯æ–‡ä»¶
         string[] sceneFiles = Directory.GetFiles("Assets/Scenes", "*.unity");
         string[] sceneNames = new string[sceneFiles.Length];
 
-        // ÌáÈ¡ÎÄ¼şÃû£¨È¥³ıÂ·¾¶ºÍÀ©Õ¹Ãû£©
+        // æå–æ–‡ä»¶åï¼ˆå»é™¤è·¯å¾„å’Œæ‰©å±•åï¼‰
         for (int i = 0; i < sceneFiles.Length; i++)
         {
             sceneNames[i] = Path.GetFileNameWithoutExtension(sceneFiles[i]);
@@ -35,17 +35,17 @@ public class SceneLoader : MonoBehaviour
         return sceneNames;
     }
 
-    // ½«³¡¾°Ãû³ÆÌí¼Óµ½ Dropdown ÖĞ
+    // å°†åœºæ™¯åç§°æ·»åŠ åˆ° Dropdown ä¸­
     private void PopulateDropdown(string[] sceneNames)
     {
-        sceneDropdown.ClearOptions(); // Çå¿ÕÏÖÓĞÑ¡Ïî
-        sceneDropdown.AddOptions(new System.Collections.Generic.List<string>(sceneNames)); // Ìí¼ÓĞÂÑ¡Ïî
+        sceneDropdown.ClearOptions(); // æ¸…ç©ºç°æœ‰é€‰é¡¹
+        sceneDropdown.AddOptions(new System.Collections.Generic.List<string>(sceneNames)); // æ·»åŠ æ–°é€‰é¡¹
     }
 
-    // °´Å¥µã»÷ÊÂ¼ş£º¼ÓÔØËùÑ¡³¡¾°
+    // æŒ‰é’®ç‚¹å‡»äº‹ä»¶ï¼šåŠ è½½æ‰€é€‰åœºæ™¯
     private void OnLoadButtonClicked()
     {
         string selectedScene = sceneDropdown.options[sceneDropdown.value].text;
-        SceneManager.LoadScene(selectedScene); // ¼ÓÔØÑ¡ÖĞµÄ³¡¾°
+        SceneManager.LoadScene(selectedScene); // åŠ è½½é€‰ä¸­çš„åœºæ™¯
     }
 }

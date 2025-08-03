@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class UIElementFadeController : MonoBehaviour
 {
+    [Tooltip("此 String 仅用于手动填写为注释以避免混淆\n\n实际此 String 不会被使用且无意义\n如果阅读时您觉得自己不会混淆这些 CanvasGroup 则可以不填写")]
+    public string currentUITipStringObject;
     public CanvasGroup targetCanvasGroup; // 目标组件的 CanvasGroup
     public float fadeDuration = 0.25f; // 淡入淡出持续时间
     // Start is called before the first frame update

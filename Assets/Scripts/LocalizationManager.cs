@@ -5,6 +5,8 @@ using UnityEngine.UI;
 
 public class LocalizationManager : MonoBehaviour
 {
+    [Header("This script is only for Text(Old)'s localization\nNo effects on TextMeshPro or Image components")]
+    [Header("仅对 Text(Old) 组件的本地化有效\n对 TextMeshPro 或 Image 组件无效")]
     [Tooltip("The language code used by the app, as defined in AppConfig.ini\nBut can be overridden by string forceLanguageCode")]
     public string languageCode;
 
@@ -31,7 +33,7 @@ public class LocalizationManager : MonoBehaviour
         else
         {
             IniFileReader languageCodeLoader = new IniFileReader(Path.Combine(Application.dataPath, "..", "AppConfig.ini"));
-            languageCode = languageCodeLoader.GetValue("Config", "Language");
+            languageCode = languageCodeLoader.GetValue("Config", "DisplayLanguage");
         }
 
         Localization();
@@ -53,7 +55,7 @@ public class LocalizationManager : MonoBehaviour
             string textContent = localizedManager.GetValue("Localization", value);
             if (textContent == null || textContent == "")
             {
-                Debug.LogError("Text content is null! Using alternative text instead.");
+                Debug.LogError("Text content is null! Using alternative text instead.\nNull or empty text's kvp is: " + value);
                 textComponent.text = alterText;
             }
             else
