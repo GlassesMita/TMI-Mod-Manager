@@ -26,7 +26,7 @@ public class ConfigurationManager : MonoBehaviour
         if (File.Exists(configFilePath))
         {
             configFileReader = new IniFileReader(configFilePath);
-            string languageCode = configFileReader.GetValue("Config", "Language");
+            string languageCode = configFileReader.GetValue("Localization", "DisplayLanguage");
             Debug.Log($"Loaded language code: {languageCode}");
         }
         else

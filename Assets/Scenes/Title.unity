@@ -5042,7 +5042,6 @@ GameObject:
   - component: {fileID: 733882134}
   - component: {fileID: 733882133}
   - component: {fileID: 733882135}
-  - component: {fileID: 733882138}
   - component: {fileID: 733882139}
   - component: {fileID: 733882140}
   - component: {fileID: 733882141}
@@ -5205,20 +5204,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sceneName: Title
---- !u!114 &733882138
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 733882127}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d2d3495938fa19b42ae7539a687bf4ce, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  windowTitle: Touhou Mystia Izakaya
-  processName: 
 --- !u!114 &733882139
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9932,7 +9917,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0.00089173164, y: -0.00016270048}
+  m_AnchoredPosition: {x: 0.000087119784, y: -0.00016270048}
   m_SizeDelta: {x: -383, y: 0}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &1535671384

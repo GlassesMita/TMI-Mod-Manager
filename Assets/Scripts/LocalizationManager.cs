@@ -33,7 +33,7 @@ public class LocalizationManager : MonoBehaviour
         else
         {
             IniFileReader languageCodeLoader = new IniFileReader(Path.Combine(Application.dataPath, "..", "AppConfig.ini"));
-            languageCode = languageCodeLoader.GetValue("Config", "DisplayLanguage");
+            languageCode = languageCodeLoader.GetValue("Localization", "DisplayLanguage");
         }
 
         Localization();

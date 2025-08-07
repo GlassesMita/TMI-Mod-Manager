@@ -15,8 +15,11 @@ public class Logger : MonoBehaviour
 
     private static void InitializeLogFilePath()
     {
-        logFilePath = Path.Combine(Application.dataPath, "Core", "Logs", "Latest.Log");
-
+#if UNITY_EDITOR && !UNITY_STANDALONE_WIN
+        logFilePath = Path.Combine(Application.dataPath, "..", "Logs", "Latest.Log");
+#else
+        logFilePath = Path.Combine(Application.dataPath, "..", "EditorRuntimeLogs", "Latest.Log");
+#endif
         // 检查日志文件是否存在
         if (File.Exists(logFilePath))
         {

@@ -76,21 +76,6 @@ public class DateTimeShower : MonoBehaviour
     {
         if (timeText != null)
         {
-            string timeString = "";
-
-            switch (timeFormat)
-            {
-                case TimeFormat.SystemDefault:
-                    timeString = System.DateTime.Now.ToShortTimeString();
-                    break;
-                case TimeFormat.HourMinuteSecond:
-                    timeString = System.DateTime.Now.ToString("HH:mm:ss");
-                    break;
-                case TimeFormat.HourMinute:
-                    timeString = System.DateTime.Now.ToString("HH:mm");
-                    break;
-            }
-
             if (enableTimeSeparatorBlink)
             {
                 blinkTimer += Time.deltaTime;
@@ -100,13 +85,44 @@ public class DateTimeShower : MonoBehaviour
                     blinkTimer = 0f;
                 }
 
+                string timeString = "";
+                switch (timeFormat)
+                {
+                    case TimeFormat.SystemDefault:
+                        timeString = System.DateTime.Now.ToShortTimeString();
+                        break;
+                    case TimeFormat.HourMinuteSecond:
+                        timeString = System.DateTime.Now.ToString("HH:mm:ss");
+                        break;
+                    case TimeFormat.HourMinute:
+                        timeString = System.DateTime.Now.ToString("HH:mm");
+                        break;
+                }
+
                 if (!isSeparatorVisible)
                 {
                     timeString = timeString.Replace(":", " ");
                 }
-            }
 
-            timeText.text = timeString;
+                timeText.text = timeString;
+            }
+            else
+            {
+                string timeString = "";
+                switch (timeFormat)
+                {
+                    case TimeFormat.SystemDefault:
+                        timeString = System.DateTime.Now.ToShortTimeString();
+                        break;
+                    case TimeFormat.HourMinuteSecond:
+                        timeString = System.DateTime.Now.ToString("HH:mm:ss");
+                        break;
+                    case TimeFormat.HourMinute:
+                        timeString = System.DateTime.Now.ToString("HH:mm");
+                        break;
+                }
+                timeText.text = timeString;
+            }
         }
     }
 }
