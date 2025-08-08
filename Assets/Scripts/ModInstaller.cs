@@ -7,7 +7,7 @@ using SFB; // 使用 StandaloneFileBrowser 命名空间
 
 public class ModInstaller : MonoBehaviour
 {
-    public string dirPath; // 目标目录路径
+    private string dirPath; // 目标目录路径
     public Button selectFileButton;
     public GameObject confirmDialog; // 确认弹窗
     public Text confirmDialogText; // 确认弹窗文本
@@ -19,13 +19,17 @@ public class ModInstaller : MonoBehaviour
     private string selectedFilePath;
     private string pluginName;
     private string version;
+    private IniFileReader localizationManager;
+    public string languageCode;
 
     void Start()
     {
-        dirPath = Application.dataPath + dirPath;
+        localizationManager = new IniFileReader(Path.Combine(Application.dataPath, "..", "AppConfig.ini"));
+        dirPath = Path.Combine(Application.dataPath, "..", "Mods");
         selectFileButton.onClick.AddListener(OpenFileSelector);
         confirmButton.onClick.AddListener(InstallConfirmed);
         cancelButton.onClick.AddListener(HideConfirmDialog);
+        languageCode = localizationManager.GetValue("Language", "DisplayLanguage");
     }
 
     void OpenFileSelector()
@@ -36,7 +40,16 @@ public class ModInstaller : MonoBehaviour
             new ExtensionFilter( "ZIP File", "zip" ),
             new ExtensionFilter( "All Files", "*" )
         };
-        var paths = StandaloneFileBrowser.OpenFilePanel("Select File", "", extensions, true);
+        string localizationPath = Path.Combine(Application.streamingAssetsPath, "Localization", $"{languageCode}.ini");
+        string dialogTitle = "Select File"; // 默认值
+        if (File.Exists(localizationPath))
+        {
+            using (var iniReader = new IniFileReader(localizationPath))
+            {
+                dialogTitle = iniReader.GetValue("Localization", "SelectFile") ?? dialogTitle;
+            }
+        }
+        var paths = StandaloneFileBrowser.OpenFilePanel(dialogTitle, "", extensions, true);
 
         if (paths.Length > 0)
         {
@@ -47,7 +60,7 @@ public class ModInstaller : MonoBehaviour
             }
             else
             {
-                Debug.LogError("Zip file validation failed.");
+                Debug.LogError("Archive file validation failed.");
             }
         }
     }
@@ -58,28 +71,39 @@ public class ModInstaller : MonoBehaviour
         {
             using (ZipArchive archive = ZipFile.OpenRead(zipFilePath))
             {
-                // 检查是否存在 Manifest.json 文件
-                var manifestEntry = archive.GetEntry("Manifest.json");
+                // 检查是否存在 Manifest.ini 文件
+                var manifestEntry = archive.GetEntry("Manifest.ini");
                 if (manifestEntry == null)
                 {
-                    Debug.LogError("Manifest.json file not found in the archive.");
+                    Debug.LogError("Manifest.ini file not found in the archive.");
                     return false;
                 }
 
-                // 读取 Manifest.json 文件内容
-                using (var reader = new StreamReader(manifestEntry.Open()))
+                // 读取 Manifest.ini 文件内容
+                using (var tempStream = new MemoryStream())
                 {
-                    string manifestContent = reader.ReadToEnd();
-                    // 解析 JSON 内容
-                    var manifest = JsonUtility.FromJson<PluginInfo>(manifestContent);
-                    pluginName = manifest.pluginName;
-                    version = manifest.version;
-
-                    // 验证 JSON 内容是否非空
-                    if (string.IsNullOrEmpty(pluginName) || string.IsNullOrEmpty(version))
+                    manifestEntry.Open().CopyTo(tempStream);
+                    tempStream.Position = 0;
+                    
+                    using (var tempFile = new StreamReader(tempStream))
                     {
-                        Debug.LogError("Manifest.json file is missing required fields.");
-                        return false;
+                        var tempPath = Path.GetTempFileName();
+                        File.WriteAllText(tempPath, tempFile.ReadToEnd());
+                        
+                        using (var iniReader = new IniFileReader(tempPath))
+                        {
+                            pluginName = iniReader.GetValue("Plugin", "pluginName");
+                            version = iniReader.GetValue("Plugin", "version");
+
+                            // 验证 INI 内容是否非空
+                            if (string.IsNullOrEmpty(pluginName) || string.IsNullOrEmpty(version))
+                            {
+                                Debug.LogError("Manifest.ini file is missing required fields.");
+                                return false;
+                            }
+                        }
+                        
+                        File.Delete(tempPath);
                     }
                 }
 
@@ -89,7 +113,7 @@ public class ModInstaller : MonoBehaviour
         }
         catch (System.Exception ex)
         {
-            Debug.LogError("Error validating zip contents: " + ex.Message);
+            Debug.LogError("Error validating archive contents: " + ex.Message);
             return false;
         }
     }
@@ -111,12 +135,12 @@ public class ModInstaller : MonoBehaviour
         {
             ZipFile.ExtractToDirectory(selectedFilePath, dirPath);
 
-            string manifestPath = Path.Combine(dirPath, "Manifest.json");
+            string manifestPath = Path.Combine(dirPath, "Manifest.ini");
             if (File.Exists(manifestPath))
             {
-                string newManifestPath = Path.Combine(dirPath, $"{pluginName}.json");
+                string newManifestPath = Path.Combine(dirPath, $"{pluginName}.ini");
                 File.Move(manifestPath, newManifestPath);
-                Debug.Log($"Manifest.json file renamed to {pluginName}.json");
+                Debug.Log($"Manifest.ini file renamed to {pluginName}.ini");
             }
             uiManager.RefreshFileList();
         }

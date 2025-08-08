@@ -2334,8 +2334,8 @@ MonoBehaviour:
   languageCode: 
   forceLanguageCode: 0
   finalLanguageCode: 
-  value: DisplayLanguage
-  alterText: <DisplayLanguage>
+  value: DisplayResources
+  alterText: <DisplayResources>
   textComponent: {fileID: 313536419}
 --- !u!114 &313536419
 MonoBehaviour:
@@ -7015,8 +7015,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -126, y: -260}
-  m_SizeDelta: {x: 500, y: 50}
+  m_AnchoredPosition: {x: -75, y: -260}
+  m_SizeDelta: {x: 600, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1031792708
 MonoBehaviour:
@@ -7031,7 +7031,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   languageCode: 
-  forceLanguageCode: 1
+  forceLanguageCode: 0
   finalLanguageCode: ja_JP
   value: RebootRequired
   alterText: <RebootRequiedWithStar>
@@ -7058,9 +7058,9 @@ MonoBehaviour:
       m_Calls: []
   m_FontData:
     m_Font: {fileID: 12800000, guid: 663a388e03dbe204aba044ff0c3ce648, type: 3}
-    m_FontSize: 25
+    m_FontSize: 20
     m_FontStyle: 2
-    m_BestFit: 1
+    m_BestFit: 0
     m_MinSize: 2
     m_MaxSize: 25
     m_Alignment: 4
@@ -9917,7 +9917,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0.000087119784, y: -0.00016270048}
+  m_AnchoredPosition: {x: -0.000010967255, y: -0.00016270048}
   m_SizeDelta: {x: -383, y: 0}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &1535671384

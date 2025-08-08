@@ -2,51 +2,51 @@ using UnityEngine;
 using System.IO;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
-using System.Linq; // Ìí¼ÓÁË System.Linq ÃüÃû¿Õ¼äÒÔÊ¹ÓÃ Where ·½·¨
+using System.Linq; // æ·»åŠ äº† System.Linq å‘½åç©ºé—´ä»¥ä½¿ç”¨ Where æ–¹æ³•
 
 public class FileLoader : MonoBehaviour
 {
-    public string directoryPath = "";
+    private string directoryPath;
     public GameObject statusTextPrefab;
-    public Text jsonContentText;
+    public Text iniContentText;
     public UIManager uiManager;
     public CurrentSceneName currentSceneName;
 
     void Start()
     {
-        directoryPath = Application.dataPath + directoryPath;
-        string[] jsonFiles = Directory.GetFiles(directoryPath, "*.json");
+        directoryPath = Path.Combine(Application.dataPath, "..", "Mods");
+        string[] iniFiles = Directory.GetFiles(directoryPath, "*.ini");
 
-        // ¹ıÂËµô Data Ä¿Â¼ÏÂµÄÎÄ¼ş
-        jsonFiles = jsonFiles.Where(file => !file.Contains("./" + Application.productName +"/")).ToArray();
+        // è¿‡æ»¤æ‰ Data ç›®å½•ä¸‹çš„æ–‡ä»¶
+        iniFiles = iniFiles.Where(file => !file.Contains("./" + Application.productName +"/")).ToArray();
 
         if (uiManager != null)
         {
-            uiManager.UpdateUIWithFiles(jsonFiles);
+            uiManager.UpdateUIWithFiles(iniFiles);
         }
         else
         {
-            Debug.LogError("UIManager µÄÒıÓÃÎ´ÉèÖÃ");
+            Debug.LogError("UIManager çš„å¼•ç”¨æœªè®¾ç½®");
         }
 
-        // ¼ì²éÊÇ·ñÕÒµ½ JSON ÎÄ¼ş
-        if (jsonFiles.Length == 0)
+        // æ£€æŸ¥æ˜¯å¦æ‰¾åˆ° INI æ–‡ä»¶
+        if (iniFiles.Length == 0)
         {
-            // ´´½¨Ô¤ÖÆ¼ş
+            // åˆ›å»ºé¢„åˆ¶ä»¶
             GameObject statusTextObject = Instantiate(statusTextPrefab);
-            // »ñÈ¡Ô¤ÖÆ¼şÉÏµÄ Text ×é¼ş
+            // è·å–é¢„åˆ¶ä»¶ä¸Šçš„ Text ç»„ä»¶
             Text statusText = statusTextObject.GetComponent<Text>();
             if (statusText != null)
             {
-                // ÉèÖÃ Text µÄÖµ
-                statusText.text = "¿Õ¿ÕÈçÒ²";
-                // Ìí¼Ó Text µ½ Canvas ÏÂ£¬»òÕßÄã¿ÉÒÔÉèÖÃËüµÄÎ»ÖÃ
+                // è®¾ç½® Text çš„å€¼
+                statusText.text = "ç©ºç©ºå¦‚ä¹Ÿ";
+                // æ·»åŠ  Text åˆ° Canvas ä¸‹ï¼Œæˆ–è€…ä½ å¯ä»¥è®¾ç½®å®ƒçš„ä½ç½®
                 statusText.transform.SetParent(uiManager.fileListContainer, false);
 
             }
             else
             {
-                Debug.LogError("Ô¤ÖÆ¼şÉÏÎ´ÄÜÕÒµ½ Text ×é¼ş");
+                Debug.LogError("é¢„åˆ¶ä»¶ä¸Šæœªèƒ½æ‰¾åˆ° Text ç»„ä»¶");
             }
         }
     }
@@ -57,7 +57,7 @@ public class FileLoader : MonoBehaviour
         {
             Destroy(child.gameObject);
         }
-        jsonContentText.text = "";
+        iniContentText.text = "";
         SceneManager.LoadScene(currentSceneName.sceneName);
     }
 }
