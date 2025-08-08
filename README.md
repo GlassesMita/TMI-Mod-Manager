@@ -1,4 +1,5 @@
-# TMI Mod Manager
+# <ruby title="你知道的太多了">Tou<rt>T</rt>hou<rt>H</rt> Mystia<rt>M</rt> Izakaya<rt>I</rt></ruby> Mod Manager
+<font size=75%><del>又称为 TMI，THMI是官方称呼</del></font>
 
 ![Windows](https://img.shields.io/badge/Windows-0078D6?style=for-the-badge&logo=windows&logoColor=white)
 ![C#](https://img.shields.io/badge/C%23-239120?style=for-the-badge&logo=c-sharp&logoColor=white)
