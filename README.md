@@ -53,6 +53,12 @@ TMI Mod Manager 是一个用于管理和组织夜雀食堂的 MOD 的工具。�
 - [**Packages**](Packages): 包含项目的依赖包。
 - [**ProjectSettings**](ProjectSettings): 项目的配置文件。
 
+## INI 配置文件结构
+<font size=125%>`AppConfig.ini`：</font>
+- ***\[Config\]***：基础配置
+- ***\[Localization\]***：本地化配置
+- ***\[Title\]***：显示标题
+
 ## 环境要求
 
 - **Unity 版本**: 2021.3.28f1
