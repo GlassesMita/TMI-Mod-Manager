@@ -263,7 +263,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_FontData:
-    m_Font: {fileID: 12800000, guid: aa9364ae973806d4c85bce44c1a256ad, type: 3}
+    m_Font: {fileID: 12800000, guid: 663a388e03dbe204aba044ff0c3ce648, type: 3}
     m_FontSize: 18
     m_FontStyle: 0
     m_BestFit: 0
@@ -2952,7 +2952,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 421997667}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
   m_Name: 
@@ -4465,7 +4465,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 652546187}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
   m_Name: 
@@ -5167,9 +5167,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f4a37ce1bdba5d74c986de5730d8e5f8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  directoryPath: \..\BepInEx\Plugins
   statusTextPrefab: {fileID: 8301713924293811708, guid: fa26b260225cf3745bb84d76ec0176c6, type: 3}
-  jsonContentText: {fileID: 1522578952}
+  iniContentText: {fileID: 0}
   uiManager: {fileID: 733882133}
   currentSceneName: {fileID: 733882136}
 --- !u!114 &733882135
@@ -5184,13 +5183,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3626608eeb3a7bd479a6186ce3fe0cf5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  dirPath: \..\BepInEx\Plugins
   selectFileButton: {fileID: 420255420}
   confirmDialog: {fileID: 263946782}
   confirmDialogText: {fileID: 664749433}
   confirmButton: {fileID: 1333184368}
   cancelButton: {fileID: 1765632547}
   uiManager: {fileID: 733882133}
+  languageCode: 
 --- !u!114 &733882136
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5265,6 +5264,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   configFilePath: 
   languageDropdown: {fileID: 865390294}
+  resolutionDropdown: {fileID: 0}
+  fullscreenToggle: {fileID: 0}
 --- !u!1 &734410158
 GameObject:
   m_ObjectHideFlags: 0
@@ -5972,9 +5973,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 733882131}
-        m_TargetAssemblyTypeName: LoaderForAboutPanel, Assembly-CSharp
-        m_MethodName: EasterEggInactive
+      - m_Target: {fileID: 733882142}
+        m_TargetAssemblyTypeName: ConfigurationManager, Assembly-CSharp
+        m_MethodName: SaveConfiguration
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -8550,7 +8551,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 560218816}
   m_HandleRect: {fileID: 560218815}
   m_Direction: 0
-  m_Value: 0
+  m_Value: 1
   m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
@@ -9917,7 +9918,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -0.000010967255, y: -0.00016270048}
+  m_AnchoredPosition: {x: 0.0000061889946, y: -0.00016270048}
   m_SizeDelta: {x: -383, y: 0}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &1535671384

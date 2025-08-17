@@ -13,12 +13,27 @@ public class ConfigurationManager : MonoBehaviour
 
     public Dropdown languageDropdown;
 
+    // 新增：分辨率下拉框和全屏切换
+    public Dropdown resolutionDropdown;
+    public Toggle fullscreenToggle;
+
+    // 存储语言名与文件名的映射
+    private List<(string languageName, string fileName)> languageList = new();
+
+    // 存储分辨率字符串列表
+    private List<string> availableResolutions = new();
 
     void Start()
     {
-        string[] languageCodes = GetLanguageCodes();
         configFilePath = Path.Combine(Application.dataPath, "..", "AppConfig.ini");
         LoadConfiguration();
+
+        // 填充下拉框
+        PopulateLanguageDropdown();
+
+        // 新增：填充分辨率下拉框和全屏Toggle
+        PopulateResolutionDropdown();
+        PopulateFullscreenToggle();
     }
 
     private void LoadConfiguration()
@@ -34,23 +49,117 @@ public class ConfigurationManager : MonoBehaviour
             Debug.LogError($"Configuration file not found at {configFilePath}");
         }
     }
-    
 
-
-    public void SaveConfiguration()
+    // 自动识别本地化文件并填充下拉框
+    private void PopulateLanguageDropdown()
     {
+        languageDropdown.ClearOptions();
+        languageList = GetLanguageList();
 
+        List<string> options = new();
+        foreach (var (languageName, _) in languageList)
+        {
+            options.Add(languageName);
+        }
+        languageDropdown.AddOptions(options);
+
+        // 可选：设置默认选中项
+        string currentLanguage = configFileReader?.GetValue("Localization", "DisplayLanguage");
+        if (!string.IsNullOrEmpty(currentLanguage))
+        {
+            int idx = languageList.FindIndex(x => x.fileName == currentLanguage);
+            if (idx >= 0)
+                languageDropdown.value = idx;
+        }
+
+        languageDropdown.onValueChanged.AddListener(OnLanguageDropdownChanged);
     }
 
-    private string[] GetLanguageCodes()
+    // 新增：填充分辨率下拉框
+    private void PopulateResolutionDropdown()
     {
-        var languageNames = new List<string>();
+        if (resolutionDropdown == null) return;
+
+        resolutionDropdown.ClearOptions();
+        availableResolutions.Clear();
+
+        // 从配置文件读取分辨率
+        string[] resolutions = configFileReader?.GetValues("Display", "AvailableScreenResolutions");
+        if (resolutions != null && resolutions.Length > 0)
+        {
+            availableResolutions.AddRange(resolutions);
+            resolutionDropdown.AddOptions(availableResolutions);
+
+            // 读取当前分辨率
+            string currentRes = configFileReader.GetValue("Display", "ScreenResolution");
+            int idx = availableResolutions.FindIndex(r => r == currentRes);
+            if (idx >= 0)
+                resolutionDropdown.value = idx;
+        }
+
+        resolutionDropdown.onValueChanged.AddListener(OnResolutionDropdownChanged);
+    }
+
+    // 新增：填充全屏Toggle
+    private void PopulateFullscreenToggle()
+    {
+        if (fullscreenToggle == null) return;
+
+        string fullscreenValue = configFileReader?.GetValue("Display", "Fullscreen");
+        bool isFullscreen = false;
+        bool.TryParse(fullscreenValue, out isFullscreen);
+        fullscreenToggle.isOn = isFullscreen;
+
+        fullscreenToggle.onValueChanged.AddListener(OnFullscreenToggleChanged);
+    }
+
+    // 新增：分辨率下拉框变化时
+    private void OnResolutionDropdownChanged(int index)
+    {
+        if (index >= 0 && index < availableResolutions.Count)
+        {
+            string selectedRes = availableResolutions[index];
+            Debug.Log($"Selected resolution: {selectedRes}");
+
+            // 可选：立即应用分辨率
+            ApplyResolution(selectedRes, fullscreenToggle != null && fullscreenToggle.isOn);
+        }
+    }
+
+    // 新增：全屏Toggle变化时
+    private void OnFullscreenToggleChanged(bool isOn)
+    {
+        Debug.Log($"Fullscreen toggled: {isOn}");
+
+        // 可选：立即应用分辨率
+        if (resolutionDropdown != null && resolutionDropdown.value >= 0 && resolutionDropdown.value < availableResolutions.Count)
+        {
+            string selectedRes = availableResolutions[resolutionDropdown.value];
+            ApplyResolution(selectedRes, isOn);
+        }
+    }
+
+    // 新增：应用分辨率和全屏设置
+    private void ApplyResolution(string resolution, bool fullscreen)
+    {
+        // 解析分辨率字符串（如 "1920x1080"）
+        var parts = resolution.Split('x');
+        if (parts.Length == 2 && int.TryParse(parts[0], out int width) && int.TryParse(parts[1], out int height))
+        {
+            Screen.SetResolution(width, height, fullscreen);
+        }
+    }
+
+    // 获取所有本地化文件的语言名和文件名
+    private List<(string languageName, string fileName)> GetLanguageList()
+    {
+        var result = new List<(string, string)>();
         string localizationPath = Path.Combine(Application.streamingAssetsPath, "Localization");
-        
+
         if (!Directory.Exists(localizationPath))
         {
             Debug.LogWarning($"Localization directory not found: {localizationPath}");
-            return new string[0];
+            return result;
         }
 
         try
@@ -64,7 +173,8 @@ public class ConfigurationManager : MonoBehaviour
                         string languageName = iniReader.GetValue("Localization", "Language");
                         if (!string.IsNullOrEmpty(languageName))
                         {
-                            languageNames.Add(languageName);
+                            string fileName = Path.GetFileName(filePath);
+                            result.Add((languageName, fileName));
                         }
                     }
                 }
@@ -78,7 +188,67 @@ public class ConfigurationManager : MonoBehaviour
         {
             Debug.LogError($"Error reading localization files: {ex.Message}");
         }
-        
-        return languageNames.ToArray();
+
+        return result;
+    }
+
+    // 下拉框选项变化时调用
+    private void OnLanguageDropdownChanged(int index)
+    {
+        if (index >= 0 && index < languageList.Count)
+        {
+            string selectedFileName = languageList[index].fileName;
+            Debug.Log($"Selected language file: {selectedFileName}");
+        }
+
+        // 只为选中的元素启用 Checkmark
+        // Dropdown 展开时，选项在 Dropdown 下的 Template/Viewport/Content 下
+        Transform template = languageDropdown.transform.Find("Template");
+        if (template == null) return;
+        Transform content = template.Find("Viewport/Content");
+        if (content == null) return;
+
+        for (int i = 0; i < content.childCount; i++)
+        {
+            var item = content.GetChild(i);
+            var toggle = item.GetComponent<Toggle>();
+            if (toggle != null)
+            {
+                // 只为选中的元素启用 Checkmark
+                toggle.isOn = (i == languageDropdown.value);
+            }
+        }
+    }
+
+    // 按钮点击时调用，保存所选语言到 AppConfig.ini
+    public void SaveConfiguration()
+    {
+        if (languageDropdown.value >= 0 && languageDropdown.value < languageList.Count)
+        {
+            string selectedFileName = languageList[languageDropdown.value].fileName;
+            string configPath = configFilePath;
+
+            // 去除 .ini 后缀，仅保存文件名
+            string languageCode = Path.GetFileNameWithoutExtension(selectedFileName);
+
+            // 使用 IniFileWriter 写入 DisplayLanguage
+            var iniWriter = new IniFileWriter(configPath);
+            iniWriter.WriteValue("Localization", "DisplayLanguage", languageCode);
+
+            Debug.Log($"Saved language: {languageCode} to {configPath}");
+        }
+
+        // 保存分辨率和全屏设置
+        if (resolutionDropdown != null && availableResolutions.Count > 0 && resolutionDropdown.value >= 0 && resolutionDropdown.value < availableResolutions.Count)
+        {
+            string selectedRes = availableResolutions[resolutionDropdown.value];
+            var iniWriter = new IniFileWriter(configFilePath);
+            iniWriter.WriteValue("Display", "ScreenResolution", selectedRes);
+        }
+        if (fullscreenToggle != null)
+        {
+            var iniWriter = new IniFileWriter(configFilePath);
+            iniWriter.WriteValue("Display", "IsFullScreen", fullscreenToggle.isOn.ToString());
+        }
     }
 }

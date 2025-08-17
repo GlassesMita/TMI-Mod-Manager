@@ -65,6 +65,30 @@ public class IniFileReader : IDisposable
         return null;
     }
 
+    /// <summary>
+    /// 获取以逗号分隔的值，返回 string[]
+    /// </summary>
+    public string[] GetValues(string section, string key)
+    {
+        var value = GetValue(section, key);
+        if (string.IsNullOrEmpty(value))
+            return Array.Empty<string>();
+        var parts = value.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+        for (int i = 0; i < parts.Length; i++)
+        {
+            parts[i] = parts[i].Trim();
+        }
+        return parts;
+    }
+
+    /// <summary>
+    /// 获取以逗号分隔的值，返回 List<string>;
+    /// </summary>
+    public List<string> GetValueList(string section, string key)
+    {
+        return new List<string>(GetValues(section, key));
+    }
+
     public void Dispose()
     {
         data?.Clear();

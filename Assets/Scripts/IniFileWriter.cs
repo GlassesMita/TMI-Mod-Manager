@@ -41,40 +41,61 @@ public class IniFileWriter
             bool sectionFound = false;
             bool keyWritten = false;
 
-            foreach (var line in lines)
+            for (int i = 0; i < lines.Length; i++)
             {
+                var line = lines[i];
+
                 if (IsValidSectionLine(line, section))
                 {
                     sectionFound = true;
                     sb.AppendLine(line);
+                    continue;
                 }
-                else if (sectionFound && IsValidSectionLine(line))
+
+                // 如果进入了目标 section
+                if (sectionFound)
                 {
-                    if (!keyWritten)
+                    // 如果遇到下一个 section，且还没写 key，则插入 key
+                    if (IsValidSectionLine(line))
                     {
-                        sb.AppendLine($"{key}={value}");
-                        keyWritten = true;
+                        if (!keyWritten)
+                        {
+                            sb.AppendLine($"{key}={value}");
+                            keyWritten = true;
+                        }
+                        sb.AppendLine(line);
+                        sectionFound = false;
+                        continue;
                     }
-                    sb.AppendLine(line);
-                    sectionFound = false;
+
+                    // 如果是目标 key，则替换
+                    if (line.TrimStart().StartsWith($"{key}=", StringComparison.OrdinalIgnoreCase))
+                    {
+                        if (!keyWritten)
+                        {
+                            sb.AppendLine($"{key}={value}");
+                            keyWritten = true;
+                        }
+                        else
+                        {
+                            // 跳过重复的 key
+                        }
+                        continue;
+                    }
                 }
-                else if (sectionFound && line.TrimStart().StartsWith($"{key}=", StringComparison.OrdinalIgnoreCase))
-                {
-                    sb.AppendLine($"{key}={value}");
-                    keyWritten = true;
-                }
-                else
-                {
-                    sb.AppendLine(line);
-                }
+
+                sb.AppendLine(line);
             }
 
+            // 如果文件结尾还在目标 section 且没写 key，则追加
             if (sectionFound && !keyWritten)
             {
                 sb.AppendLine($"{key}={value}");
+                keyWritten = true;
             }
 
-            if (!sectionFound)
+            // 如果整个文件都没有目标 section，则追加
+            if (!sectionFound && !keyWritten)
             {
                 sb.AppendLine($"[{section}]");
                 sb.AppendLine($"{key}={value}");
