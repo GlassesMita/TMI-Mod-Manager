@@ -1,4 +1,5 @@
-# TMI Mod Manager
+# <ruby title="你知道的太多了">Tou<rt>T</rt>hou<rt>H</rt> Mystia<rt>M</rt> Izakaya<rt>I</rt></ruby> Mod Manager
+<font size=75%><del>又称为 TMI，THMI是官方称呼</del></font>
 
 ![Windows](https://img.shields.io/badge/Windows-0078D6?style=for-the-badge&logo=windows&logoColor=white)
 ![C#](https://img.shields.io/badge/C%23-239120?style=for-the-badge&logo=c-sharp&logoColor=white)
@@ -52,6 +53,12 @@ TMI Mod Manager 是一个用于管理和组织夜雀食堂的 MOD 的工具。�
 - [**Assets**](Assets): 存放项目的资源文件。
 - [**Packages**](Packages): 包含项目的依赖包。
 - [**ProjectSettings**](ProjectSettings): 项目的配置文件。
+
+## INI 配置文件结构
+<font size=125%>`AppConfig.ini`：</font>
+- ***\[Config\]***：基础配置
+- ***\[Localization\]***：本地化配置
+- ***\[Title\]***：显示标题
 
 ## 环境要求
 
