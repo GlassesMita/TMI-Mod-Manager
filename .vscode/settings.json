@@ -1,3 +1,5 @@
 {
-    "dotnet.preferCSharpExtension": true
+    "dotnet.preferCSharpExtension": true,
+    "editor.fontSize": 16,
+    "editor.fontFamily": "\"Cascadia Code\", \"微软雅黑\""
 }

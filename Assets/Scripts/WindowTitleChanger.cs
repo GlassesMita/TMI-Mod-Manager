@@ -3,6 +3,7 @@ using System.Runtime.InteropServices;
 using UnityEngine;
 using System.Diagnostics;
 using System.IO;
+using Debug = UnityEngine.Debug;
 
 public class WindowTitleChanger : MonoBehaviour
 {
@@ -21,8 +22,29 @@ public class WindowTitleChanger : MonoBehaviour
 #endif
 
     private static string CONFIG_SECTION = "Title";
-    private static string DEFAULT_TITLE = Application.productName;
+    private static string DEFAULT_TITLE = null;
     private const string WINDOW_CLASS = "UnityWndClass";
+
+    // 读取KVP配置并返回标题
+    private static string GetTitleFromKvp()
+    {
+        string configPath = Path.Combine(Application.dataPath, "..", "AppConfig.ini");
+        string fallback = DEFAULT_TITLE ?? "UnityApp";
+        if (!File.Exists(configPath)) return fallback;
+        using var reader = new IniFileReader(configPath);
+        // 优先取Title节下的ThisWindowTitle，否则取MainGameWindowTitle，否则默认
+        string title = reader.GetValue(CONFIG_SECTION, "ThisWindowTitle")
+            ?? reader.GetValue(CONFIG_SECTION, "MainGameWindowTitle")
+            ?? fallback;
+        return title;
+    }
+    void Awake()
+    {
+        if (DEFAULT_TITLE == null)
+        {
+            DEFAULT_TITLE = Application.productName;
+        }
+    }
 
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
     private static void Initialize()
@@ -30,14 +52,32 @@ public class WindowTitleChanger : MonoBehaviour
 #if UNITY_STANDALONE_WIN && !UNITY_EDITOR
         try
         {
-            var title = LoadTitleFromConfig();
-
+            string title = GetTitleFromKvp();
             // 检查是否为管理员权限
             if (IsRunningAsAdmin())
             {
-                title += " (Admin)";
+                string langCode;
+                using var languageCodeMemeLoader = new IniFileReader(Path.Combine(Application.dataPath, "..", "AppConfig.ini"));
+                langCode = languageCodeMemeLoader.GetValue("Localization", "DisplayLanguage");
+                if (langCode == "zh_MEMES")
+                {
+                    title += " (Admin) (未响应)";
+                }
+                else
+                {
+                    title += " (Admin)";
+                }
             }
-
+            else
+            {
+                string langCode;
+                using var languageCodeMemeLoader = new IniFileReader(Path.Combine(Application.dataPath, "..", "AppConfig.ini"));
+                langCode = languageCodeMemeLoader.GetValue("Localization", "DisplayLanguage");
+                if (langCode == "zh_MEMES")
+                {
+                    title += " (未响应)";
+                }
+            }
             if (!string.IsNullOrEmpty(title))
             {
                 ApplyWindowTitle(title);
@@ -62,34 +102,25 @@ public class WindowTitleChanger : MonoBehaviour
 #endif
     }
 
-    private static string LoadTitleFromConfig()
-    {
-        string configPath = Path.Combine(
-            Application.dataPath,
-            "..",
-            "Definitions.ini"
-        );
-
-        if (!File.Exists(configPath)) return DEFAULT_TITLE;
-
-        using var reader = new IniFileReader(configPath);
-        return reader.GetValue(CONFIG_SECTION, "ThisWindowTitle")
-            ?? reader.GetValue(CONFIG_SECTION, "MainGameWindowTitle")
-            ?? DEFAULT_TITLE;
-    }
-
     private static void ApplyWindowTitle(string title)
     {
-#if UNITY_STANDALONE_WIN && !UNITY_EDITOR
-        IntPtr hwnd = FindWindow(WINDOW_CLASS, null);
+#if UNITY_STANDALONE_WIN
+        // 优先用当前进程主窗口句柄
+        IntPtr hwnd = Process.GetCurrentProcess().MainWindowHandle;
+        if (hwnd == IntPtr.Zero)
+        {
+            // 兜底用 FindWindow
+            hwnd = FindWindow(WINDOW_CLASS, null);
+        }
         if (hwnd != IntPtr.Zero)
         {
-            // 确保使用 Unicode 编码
             SetWindowText(hwnd, title);
         }
+        else
+        {
+            Debug.LogWarning("未找到自身窗口句柄，标题未能设置。");
+        }
 #endif
-
-
     }
 
     private bool shouldCheckProcess = false;
@@ -110,11 +141,17 @@ public class WindowTitleChanger : MonoBehaviour
         {
             if (targetProcess == null || targetProcess.HasExited)
             {
-                // 查找目标进程
-                Process[] processes = Process.GetProcessesByName("Touhou Mystia Izakaya.exe");
+                if (string.IsNullOrEmpty(processName))
+                {
+                    Debug.LogWarning("processName未设置");
+                    shouldCheckProcess = false;
+                    return;
+                }
+                Process[] processes = Process.GetProcessesByName(processName);
                 if (processes.Length == 0)
                 {
                     shouldCheckProcess = false;
+                    Debug.LogWarning($"未找到目标进程: {processName}");
                     return;
                 }
                 targetProcess = processes[0];
@@ -122,16 +159,30 @@ public class WindowTitleChanger : MonoBehaviour
 
             if (targetProcess != null && !targetProcess.HasExited)
             {
-                IntPtr hwnd = targetProcess.MainWindowHandle;
-                if (hwnd != IntPtr.Zero && targetProcess.MainWindowTitle == windowTitle)
+                // 强制用 UnityWndClass 查找目标窗口
+                IntPtr hwnd = FindWindow(WINDOW_CLASS, null);
+                if (hwnd != IntPtr.Zero)
                 {
-                    SetWindowText(hwnd, windowTitle);
-                    shouldCheckProcess = false; // 修改成功后停止检测
+                    string title = GetTitleFromKvp();
+                    string langCode;
+                    using var languageCodeMemeLoader = new IniFileReader(Path.Combine(Application.dataPath, "..", "AppConfig.ini"));
+                    langCode = languageCodeMemeLoader.GetValue("Localization", "DisplayLanguage");
+                    if (langCode == "zh_MEMES")
+                    {
+                        title += " (未响应)";
+                    }
+                    SetWindowText(hwnd, title);
+                    shouldCheckProcess = false;
+                }
+                else
+                {
+                    Debug.LogWarning("未找到目标进程窗口句柄（UnityWndClass）。");
                 }
             }
         }
-        catch
+        catch (Exception ex)
         {
+            Debug.LogError("修改外部窗口标题失败: " + ex.Message);
             shouldCheckProcess = false;
         }
     }

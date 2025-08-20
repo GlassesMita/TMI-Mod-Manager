@@ -52,10 +52,10 @@ public class IniFileWriter
                     continue;
                 }
 
-                // Èç¹û½øÈëÁËÄ¿±ê section
+                // å¦‚æœè¿›å…¥äº†ç›®æ ‡ section
                 if (sectionFound)
                 {
-                    // Èç¹ûÓöµ½ÏÂÒ»¸ö section£¬ÇÒ»¹Ã»Ğ´ key£¬Ôò²åÈë key
+                    // å¦‚æœé‡åˆ°ä¸‹ä¸€ä¸ª sectionï¼Œä¸”è¿˜æ²¡å†™ keyï¼Œåˆ™æ’å…¥ key
                     if (IsValidSectionLine(line))
                     {
                         if (!keyWritten)
@@ -68,7 +68,7 @@ public class IniFileWriter
                         continue;
                     }
 
-                    // Èç¹ûÊÇÄ¿±ê key£¬ÔòÌæ»»
+                    // å¦‚æœæ˜¯ç›®æ ‡ keyï¼Œåˆ™æ›¿æ¢
                     if (line.TrimStart().StartsWith($"{key}=", StringComparison.OrdinalIgnoreCase))
                     {
                         if (!keyWritten)
@@ -78,7 +78,7 @@ public class IniFileWriter
                         }
                         else
                         {
-                            // Ìø¹ıÖØ¸´µÄ key
+                            // è·³è¿‡é‡å¤çš„ key
                         }
                         continue;
                     }
@@ -87,14 +87,14 @@ public class IniFileWriter
                 sb.AppendLine(line);
             }
 
-            // Èç¹ûÎÄ¼ş½áÎ²»¹ÔÚÄ¿±ê section ÇÒÃ»Ğ´ key£¬Ôò×·¼Ó
+            // å¦‚æœæ–‡ä»¶ç»“å°¾è¿˜åœ¨ç›®æ ‡ section ä¸”æ²¡å†™ keyï¼Œåˆ™è¿½åŠ 
             if (sectionFound && !keyWritten)
             {
                 sb.AppendLine($"{key}={value}");
                 keyWritten = true;
             }
 
-            // Èç¹ûÕû¸öÎÄ¼ş¶¼Ã»ÓĞÄ¿±ê section£¬Ôò×·¼Ó
+            // å¦‚æœæ•´ä¸ªæ–‡ä»¶éƒ½æ²¡æœ‰ç›®æ ‡ sectionï¼Œåˆ™è¿½åŠ 
             if (!sectionFound && !keyWritten)
             {
                 sb.AppendLine($"[{section}]");

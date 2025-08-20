@@ -43,7 +43,7 @@ public class UIManager : MonoBehaviour
             CreateFileButton(file);
         }
         // 过滤掉 Data 目录下的文件
-        jsonFiles = jsonFiles.Where(file => !file.Contains(Application.dataPath + @"/")).ToArray();
+        jsonFiles = jsonFiles.Where(file => !file.Contains(Path.Combine(Application.dataPath + ".." + "Mods"))).ToArray();
     }
 
     void CreateFileButton(string filePath)

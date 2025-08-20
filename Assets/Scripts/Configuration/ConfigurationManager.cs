@@ -13,14 +13,14 @@ public class ConfigurationManager : MonoBehaviour
 
     public Dropdown languageDropdown;
 
-    // ĞÂÔö£º·Ö±æÂÊÏÂÀ­¿òºÍÈ«ÆÁÇĞ»»
+    // æ–°å¢ï¼šåˆ†è¾¨ç‡ä¸‹æ‹‰æ¡†å’Œå…¨å±åˆ‡æ¢
     public Dropdown resolutionDropdown;
     public Toggle fullscreenToggle;
 
-    // ´æ´¢ÓïÑÔÃûÓëÎÄ¼şÃûµÄÓ³Éä
+    // å­˜å‚¨è¯­è¨€åä¸æ–‡ä»¶åçš„æ˜ å°„
     private List<(string languageName, string fileName)> languageList = new();
 
-    // ´æ´¢·Ö±æÂÊ×Ö·û´®ÁĞ±í
+    // å­˜å‚¨åˆ†è¾¨ç‡å­—ç¬¦ä¸²åˆ—è¡¨
     private List<string> availableResolutions = new();
 
     void Start()
@@ -28,12 +28,57 @@ public class ConfigurationManager : MonoBehaviour
         configFilePath = Path.Combine(Application.dataPath, "..", "AppConfig.ini");
         LoadConfiguration();
 
-        // Ìî³äÏÂÀ­¿ò
+        // å¡«å……ä¸‹æ‹‰æ¡†
         PopulateLanguageDropdown();
-
-        // ĞÂÔö£ºÌî³ä·Ö±æÂÊÏÂÀ­¿òºÍÈ«ÆÁToggle
         PopulateResolutionDropdown();
         PopulateFullscreenToggle();
+
+        // è‡ªåŠ¨æ ¹æ®inié…ç½®é€‰æ‹©ä¸‹æ‹‰æ¡†å’ŒLabelçš„å€¼
+        // è¯­è¨€ä¸‹æ‹‰æ¡†
+        string iniLang = configFileReader?.GetValue("Localization", "DisplayLanguage");
+        if (!string.IsNullOrEmpty(iniLang) && languageDropdown != null && languageList.Count > 0)
+        {
+            int idx = languageList.FindIndex(x => Path.GetFileNameWithoutExtension(x.fileName) == iniLang);
+            if (idx >= 0)
+            {
+                languageDropdown.value = idx;
+                // è‡ªåŠ¨å¡«å……åˆ°Labelï¼ˆå‡è®¾Labelä¸ºDropdownçš„CaptionTextï¼‰
+                var label = languageDropdown.transform.Find("Label");
+                if (label != null)
+                {
+                    var labelText = label.GetComponent<Text>();
+                    if (labelText != null)
+                        labelText.text = languageList[idx].languageName;
+                }
+            }
+        }
+
+        // åˆ†è¾¨ç‡ä¸‹æ‹‰æ¡†
+        string iniRes = configFileReader?.GetValue("Display", "ScreenResolution");
+        if (!string.IsNullOrEmpty(iniRes) && resolutionDropdown != null && availableResolutions.Count > 0)
+        {
+            int idx = availableResolutions.FindIndex(r => r == iniRes);
+            if (idx >= 0)
+            {
+                resolutionDropdown.value = idx;
+                var label = resolutionDropdown.transform.Find("Label");
+                if (label != null)
+                {
+                    var labelText = label.GetComponent<Text>();
+                    if (labelText != null)
+                        labelText.text = availableResolutions[idx];
+                }
+            }
+        }
+
+        // å…¨å±Toggle
+        string iniFullscreen = configFileReader?.GetValue("Display", "Fullscreen");
+        if (!string.IsNullOrEmpty(iniFullscreen) && fullscreenToggle != null)
+        {
+            bool isFullscreen = false;
+            bool.TryParse(iniFullscreen, out isFullscreen);
+            fullscreenToggle.isOn = isFullscreen;
+        }
     }
 
     private void LoadConfiguration()
@@ -50,7 +95,7 @@ public class ConfigurationManager : MonoBehaviour
         }
     }
 
-    // ×Ô¶¯Ê¶±ğ±¾µØ»¯ÎÄ¼ş²¢Ìî³äÏÂÀ­¿ò
+    // è‡ªåŠ¨è¯†åˆ«æœ¬åœ°åŒ–æ–‡ä»¶å¹¶å¡«å……ä¸‹æ‹‰æ¡†
     private void PopulateLanguageDropdown()
     {
         languageDropdown.ClearOptions();
@@ -63,7 +108,7 @@ public class ConfigurationManager : MonoBehaviour
         }
         languageDropdown.AddOptions(options);
 
-        // ¿ÉÑ¡£ºÉèÖÃÄ¬ÈÏÑ¡ÖĞÏî
+        // å¯é€‰ï¼šè®¾ç½®é»˜è®¤é€‰ä¸­é¡¹
         string currentLanguage = configFileReader?.GetValue("Localization", "DisplayLanguage");
         if (!string.IsNullOrEmpty(currentLanguage))
         {
@@ -75,7 +120,7 @@ public class ConfigurationManager : MonoBehaviour
         languageDropdown.onValueChanged.AddListener(OnLanguageDropdownChanged);
     }
 
-    // ĞÂÔö£ºÌî³ä·Ö±æÂÊÏÂÀ­¿ò
+    // æ–°å¢ï¼šå¡«å……åˆ†è¾¨ç‡ä¸‹æ‹‰æ¡†
     private void PopulateResolutionDropdown()
     {
         if (resolutionDropdown == null) return;
@@ -83,14 +128,14 @@ public class ConfigurationManager : MonoBehaviour
         resolutionDropdown.ClearOptions();
         availableResolutions.Clear();
 
-        // ´ÓÅäÖÃÎÄ¼ş¶ÁÈ¡·Ö±æÂÊ
+        // ä»é…ç½®æ–‡ä»¶è¯»å–åˆ†è¾¨ç‡
         string[] resolutions = configFileReader?.GetValues("Display", "AvailableScreenResolutions");
         if (resolutions != null && resolutions.Length > 0)
         {
             availableResolutions.AddRange(resolutions);
             resolutionDropdown.AddOptions(availableResolutions);
 
-            // ¶ÁÈ¡µ±Ç°·Ö±æÂÊ
+            // è¯»å–å½“å‰åˆ†è¾¨ç‡
             string currentRes = configFileReader.GetValue("Display", "ScreenResolution");
             int idx = availableResolutions.FindIndex(r => r == currentRes);
             if (idx >= 0)
@@ -100,7 +145,7 @@ public class ConfigurationManager : MonoBehaviour
         resolutionDropdown.onValueChanged.AddListener(OnResolutionDropdownChanged);
     }
 
-    // ĞÂÔö£ºÌî³äÈ«ÆÁToggle
+    // æ–°å¢ï¼šå¡«å……å…¨å±Toggle
     private void PopulateFullscreenToggle()
     {
         if (fullscreenToggle == null) return;
@@ -113,7 +158,7 @@ public class ConfigurationManager : MonoBehaviour
         fullscreenToggle.onValueChanged.AddListener(OnFullscreenToggleChanged);
     }
 
-    // ĞÂÔö£º·Ö±æÂÊÏÂÀ­¿ò±ä»¯Ê±
+    // æ–°å¢ï¼šåˆ†è¾¨ç‡ä¸‹æ‹‰æ¡†å˜åŒ–æ—¶
     private void OnResolutionDropdownChanged(int index)
     {
         if (index >= 0 && index < availableResolutions.Count)
@@ -121,17 +166,17 @@ public class ConfigurationManager : MonoBehaviour
             string selectedRes = availableResolutions[index];
             Debug.Log($"Selected resolution: {selectedRes}");
 
-            // ¿ÉÑ¡£ºÁ¢¼´Ó¦ÓÃ·Ö±æÂÊ
+            // å¯é€‰ï¼šç«‹å³åº”ç”¨åˆ†è¾¨ç‡
             ApplyResolution(selectedRes, fullscreenToggle != null && fullscreenToggle.isOn);
         }
     }
 
-    // ĞÂÔö£ºÈ«ÆÁToggle±ä»¯Ê±
+    // æ–°å¢ï¼šå…¨å±Toggleå˜åŒ–æ—¶
     private void OnFullscreenToggleChanged(bool isOn)
     {
         Debug.Log($"Fullscreen toggled: {isOn}");
 
-        // ¿ÉÑ¡£ºÁ¢¼´Ó¦ÓÃ·Ö±æÂÊ
+        // å¯é€‰ï¼šç«‹å³åº”ç”¨åˆ†è¾¨ç‡
         if (resolutionDropdown != null && resolutionDropdown.value >= 0 && resolutionDropdown.value < availableResolutions.Count)
         {
             string selectedRes = availableResolutions[resolutionDropdown.value];
@@ -139,10 +184,10 @@ public class ConfigurationManager : MonoBehaviour
         }
     }
 
-    // ĞÂÔö£ºÓ¦ÓÃ·Ö±æÂÊºÍÈ«ÆÁÉèÖÃ
+    // æ–°å¢ï¼šåº”ç”¨åˆ†è¾¨ç‡å’Œå…¨å±è®¾ç½®
     private void ApplyResolution(string resolution, bool fullscreen)
     {
-        // ½âÎö·Ö±æÂÊ×Ö·û´®£¨Èç "1920x1080"£©
+        // è§£æåˆ†è¾¨ç‡å­—ç¬¦ä¸²ï¼ˆå¦‚ "1920x1080"ï¼‰
         var parts = resolution.Split('x');
         if (parts.Length == 2 && int.TryParse(parts[0], out int width) && int.TryParse(parts[1], out int height))
         {
@@ -150,7 +195,7 @@ public class ConfigurationManager : MonoBehaviour
         }
     }
 
-    // »ñÈ¡ËùÓĞ±¾µØ»¯ÎÄ¼şµÄÓïÑÔÃûºÍÎÄ¼şÃû
+    // è·å–æ‰€æœ‰æœ¬åœ°åŒ–æ–‡ä»¶çš„è¯­è¨€åå’Œæ–‡ä»¶å
     private List<(string languageName, string fileName)> GetLanguageList()
     {
         var result = new List<(string, string)>();
@@ -192,7 +237,7 @@ public class ConfigurationManager : MonoBehaviour
         return result;
     }
 
-    // ÏÂÀ­¿òÑ¡Ïî±ä»¯Ê±µ÷ÓÃ
+    // ä¸‹æ‹‰æ¡†é€‰é¡¹å˜åŒ–æ—¶è°ƒç”¨
     private void OnLanguageDropdownChanged(int index)
     {
         if (index >= 0 && index < languageList.Count)
@@ -201,8 +246,8 @@ public class ConfigurationManager : MonoBehaviour
             Debug.Log($"Selected language file: {selectedFileName}");
         }
 
-        // Ö»ÎªÑ¡ÖĞµÄÔªËØÆôÓÃ Checkmark
-        // Dropdown Õ¹¿ªÊ±£¬Ñ¡ÏîÔÚ Dropdown ÏÂµÄ Template/Viewport/Content ÏÂ
+        // åªä¸ºé€‰ä¸­çš„å…ƒç´ å¯ç”¨ Checkmark
+        // Dropdown å±•å¼€æ—¶ï¼Œé€‰é¡¹åœ¨ Dropdown ä¸‹çš„ Template/Viewport/Content ä¸‹
         Transform template = languageDropdown.transform.Find("Template");
         if (template == null) return;
         Transform content = template.Find("Viewport/Content");
@@ -214,13 +259,13 @@ public class ConfigurationManager : MonoBehaviour
             var toggle = item.GetComponent<Toggle>();
             if (toggle != null)
             {
-                // Ö»ÎªÑ¡ÖĞµÄÔªËØÆôÓÃ Checkmark
+                // åªä¸ºé€‰ä¸­çš„å…ƒç´ å¯ç”¨ Checkmark
                 toggle.isOn = (i == languageDropdown.value);
             }
         }
     }
 
-    // °´Å¥µã»÷Ê±µ÷ÓÃ£¬±£´æËùÑ¡ÓïÑÔµ½ AppConfig.ini
+    // æŒ‰é’®ç‚¹å‡»æ—¶è°ƒç”¨ï¼Œä¿å­˜æ‰€é€‰è¯­è¨€åˆ° AppConfig.ini
     public void SaveConfiguration()
     {
         if (languageDropdown.value >= 0 && languageDropdown.value < languageList.Count)
@@ -228,17 +273,17 @@ public class ConfigurationManager : MonoBehaviour
             string selectedFileName = languageList[languageDropdown.value].fileName;
             string configPath = configFilePath;
 
-            // È¥³ı .ini ºó×º£¬½ö±£´æÎÄ¼şÃû
+            // å»é™¤ .ini åç¼€ï¼Œä»…ä¿å­˜æ–‡ä»¶å
             string languageCode = Path.GetFileNameWithoutExtension(selectedFileName);
 
-            // Ê¹ÓÃ IniFileWriter Ğ´Èë DisplayLanguage
+            // ä½¿ç”¨ IniFileWriter å†™å…¥ DisplayLanguage
             var iniWriter = new IniFileWriter(configPath);
             iniWriter.WriteValue("Localization", "DisplayLanguage", languageCode);
 
             Debug.Log($"Saved language: {languageCode} to {configPath}");
         }
 
-        // ±£´æ·Ö±æÂÊºÍÈ«ÆÁÉèÖÃ
+        // ä¿å­˜åˆ†è¾¨ç‡å’Œå…¨å±è®¾ç½®
         if (resolutionDropdown != null && availableResolutions.Count > 0 && resolutionDropdown.value >= 0 && resolutionDropdown.value < availableResolutions.Count)
         {
             string selectedRes = availableResolutions[resolutionDropdown.value];
