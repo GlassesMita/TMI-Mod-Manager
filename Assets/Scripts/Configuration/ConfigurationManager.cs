@@ -3,6 +3,7 @@ using System.Collections;
 using UnityEngine.UI;
 using System.IO;
 using System.Collections.Generic;
+using Shortcut;
 
 public class ConfigurationManager : MonoBehaviour
 {
@@ -16,6 +17,8 @@ public class ConfigurationManager : MonoBehaviour
     // 新增：分辨率下拉框和全屏切换
     public Dropdown resolutionDropdown;
     public Toggle fullscreenToggle;
+
+    public Toggle shortcutToggle;
 
     // 存储语言名与文件名的映射
     private List<(string languageName, string fileName)> languageList = new();
@@ -32,6 +35,7 @@ public class ConfigurationManager : MonoBehaviour
         PopulateLanguageDropdown();
         PopulateResolutionDropdown();
         PopulateFullscreenToggle();
+        PopulateShortcutToggle();
 
         // 自动根据ini配置选择下拉框和Label的值
         // 语言下拉框
@@ -78,6 +82,14 @@ public class ConfigurationManager : MonoBehaviour
             bool isFullscreen = false;
             bool.TryParse(iniFullscreen, out isFullscreen);
             fullscreenToggle.isOn = isFullscreen;
+        }
+
+        string iniShortcut = configFileReader?.GetValue("Shortcut", "ShowIndicator");
+        if (!string.IsNullOrEmpty(iniShortcut) && shortcutToggle != null)
+        {
+            bool isShowIndicator = false;
+            bool.TryParse(iniShortcut, out isShowIndicator);
+            shortcutToggle.isOn = isShowIndicator;
         }
     }
 
@@ -156,6 +168,22 @@ public class ConfigurationManager : MonoBehaviour
         fullscreenToggle.isOn = isFullscreen;
 
         fullscreenToggle.onValueChanged.AddListener(OnFullscreenToggleChanged);
+    }
+
+    private void PopulateShortcutToggle()
+    {
+        if (shortcutToggle == null) return;
+
+        string showIndicatorValue = configFileReader?.GetValue("Shortcut", "ShowIndicator");
+        bool showIndicator = true;
+        bool.TryParse(showIndicatorValue, out showIndicator);
+        shortcutToggle.isOn = showIndicator;
+
+        var shortcutManager = FindObjectOfType<ShortcutManager>();
+        if (shortcutManager != null)
+        {
+            shortcutManager.showShortcutIndicator = showIndicator;
+        }
     }
 
     // 新增：分辨率下拉框变化时
@@ -294,6 +322,12 @@ public class ConfigurationManager : MonoBehaviour
         {
             var iniWriter = new IniFileWriter(configFilePath);
             iniWriter.WriteValue("Display", "IsFullScreen", fullscreenToggle.isOn.ToString());
+        }
+
+        if (shortcutToggle != null)
+        {
+            var iniWriter = new IniFileWriter(configFilePath);
+            iniWriter.WriteValue("Shortcut", "ShowIndicator", shortcutToggle.isOn.ToString());
         }
     }
 }

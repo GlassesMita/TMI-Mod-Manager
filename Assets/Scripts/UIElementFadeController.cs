@@ -26,6 +26,18 @@ public class UIElementFadeController : MonoBehaviour
         StartCoroutine(FadeOut());
     }
 
+    public void Update()
+    {
+        // If Escape key pressed, call DeactivateComponent() method;
+        if (targetCanvasGroup.alpha > 0)
+        {
+            if (Input.GetKeyDown(KeyCode.Escape))
+            {
+                DeactivateComponent();
+            }
+        }
+    }
+
     private IEnumerator FadeIn()
     {
         float elapsedTime = 0f;
