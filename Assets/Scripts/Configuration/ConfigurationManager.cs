@@ -19,6 +19,10 @@ public class ConfigurationManager : MonoBehaviour
     public Toggle fullscreenToggle;
 
     public Toggle shortcutToggle;
+    // 用于控制 OsuCursor 指针基准高度（像素），UI 上的 Slider
+    public Slider cursorSizeSlider;
+    // 可选：显示当前像素值的文本（实时显示 40 + slider.value）
+    public Text cursorSizeLabel;
 
     // 存储语言名与文件名的映射
     private List<(string languageName, string fileName)> languageList = new();
@@ -90,6 +94,32 @@ public class ConfigurationManager : MonoBehaviour
             bool isShowIndicator = false;
             bool.TryParse(iniShortcut, out isShowIndicator);
             shortcutToggle.isOn = isShowIndicator;
+        }
+
+        // 读取并初始化 Cursor 大小 Slider（Slider value = 0..20，对应实际像素 40..60）
+        if (cursorSizeSlider != null)
+        {
+            cursorSizeSlider.minValue = 0f;
+            cursorSizeSlider.maxValue = 20f;
+            string iniCursorSize = configFileReader?.GetValue("Cursor", "CursorBaseHeight");
+            float cursorBase = 40f;
+            if (!string.IsNullOrEmpty(iniCursorSize)) float.TryParse(iniCursorSize, out cursorBase);
+            cursorBase = Mathf.Clamp(cursorBase, 40f, 60f);
+            // 将实际像素值转换为 Slider 的 0..20 范围
+            float sliderValue = cursorBase - 40f;
+            cursorSizeSlider.value = sliderValue;
+            cursorSizeSlider.onValueChanged.AddListener(OnCursorSizeSliderChanged);
+
+            // 更新 label 并将初始值应用到 OsuCursor（如果存在）
+            float displayValue = 40f + cursorSizeSlider.value;
+            if (cursorSizeLabel != null)
+                cursorSizeLabel.text = Mathf.RoundToInt(displayValue).ToString() + " px";
+
+            var osu = FindObjectOfType<OsuCursor>();
+            if (osu != null)
+            {
+                osu.SetBaseHeight(displayValue);
+            }
         }
     }
 
@@ -328,6 +358,29 @@ public class ConfigurationManager : MonoBehaviour
         {
             var iniWriter = new IniFileWriter(configFilePath);
             iniWriter.WriteValue("Shortcut", "ShowIndicator", shortcutToggle.isOn.ToString());
+        }
+
+        // 保存 Cursor 大小到 INI
+        if (cursorSizeSlider != null)
+        {
+            // 保存实际像素高度（40 + slider.value）
+            float displayValue = 40f + cursorSizeSlider.value;
+            var iniWriter = new IniFileWriter(configFilePath);
+            iniWriter.WriteValue("Cursor", "CursorBaseHeight", displayValue.ToString());
+        }
+    }
+
+    // Slider 回调：实时更新 OsuCursor 的基准高度
+    private void OnCursorSizeSliderChanged(float val)
+    {
+        float displayValue = 40f + val;
+        if (cursorSizeLabel != null)
+            cursorSizeLabel.text = Mathf.RoundToInt(displayValue).ToString() + " px";
+
+        var osu = FindObjectOfType<OsuCursor>();
+        if (osu != null)
+        {
+            osu.SetBaseHeight(displayValue);
         }
     }
 }
