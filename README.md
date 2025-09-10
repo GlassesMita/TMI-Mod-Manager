@@ -79,5 +79,11 @@ TMI Mod Manager 是一个用于管理和组织夜雀食堂的 MOD 的工具。�
 3. 打开项目并运行：
     - 在 Unity 编辑器中打开项目，点击 "File" → "Build Settings" 菜单
     - 点击 "Build" 右侧的 ▼，然后选择 "Clean Build"
-    - 选择生成输出文件夹，建议位于 SteamLibrary/SteamApps/Common/Touhou Mystia Izakaya/Mod Manager
-    - 生成完成后运行 TMI Mod Manager.exe
+    - 选择生成输出文件夹，建议位于 *SteamLibrary/SteamApps/Common/Touhou Mystia Izakaya/Mod Manager*
+    - 生成完成后将随仓库克隆的 **AppConfig.ini** 复制到和 TMI Mod Manager.exe 的同级目录
+    - 运行 TMI Mod Manager.exe
+  
+## 项目示例图
+![Main UI](QQ20250910-115819.png)
+![Settings](32d3cef1-df98-4743-bcc4-ed3d3df0e94c.png)
+![About](QQ20250910-115929.png)
