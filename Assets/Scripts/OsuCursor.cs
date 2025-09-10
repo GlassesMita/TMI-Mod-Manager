@@ -27,16 +27,22 @@ public class OsuCursor : MonoBehaviour
     void Start()
     {
         // 创建 Canvas
-        GameObject canvasObj = new GameObject("OsuCursorCanvas");
-        canvas = canvasObj.AddComponent<Canvas>();
-        canvas.renderMode = RenderMode.ScreenSpaceOverlay;
-        canvas.sortingOrder = 9999;
-        canvasObj.AddComponent<CanvasScaler>();
-        canvasObj.AddComponent<GraphicRaycaster>();
+    GameObject canvasObj = new GameObject("OsuCursorCanvas");
+    canvas = canvasObj.AddComponent<Canvas>();
+    canvas.renderMode = RenderMode.ScreenSpaceOverlay;
+    // 强制覆盖排序，确保指针总在最上层（比 Dropdown 的弹出项更高）
+    canvas.overrideSorting = true;
+    canvas.sortingOrder = 32767;
+    // 设置到常用 UI 层
+    canvas.sortingLayerName = "UI";
+    canvasObj.AddComponent<CanvasScaler>();
+    canvasObj.AddComponent<GraphicRaycaster>();
 
         // 主指针
         GameObject cursorObj = new GameObject("OsuCursor");
-        cursorObj.transform.SetParent(canvas.transform);
+    cursorObj.transform.SetParent(canvas.transform);
+    // 确保 cursorObj 在画布的最后一个子对象（渲染优先）
+    cursorObj.transform.SetAsLastSibling();
         cursorImage = cursorObj.AddComponent<Image>();
         cursorImage.sprite = cursorSprite;
         cursorImage.raycastTarget = false;
