@@ -23,6 +23,8 @@ public class ConfigurationManager : MonoBehaviour
     public Slider cursorSizeSlider;
     // 可选：显示当前像素值的文本（实时显示 40 + slider.value）
     public Text cursorSizeLabel;
+    // 无障碍开关
+    public Toggle accessibilityToggle;
 
     // 存储语言名与文件名的映射
     private List<(string languageName, string fileName)> languageList = new();
@@ -94,6 +96,18 @@ public class ConfigurationManager : MonoBehaviour
             bool isShowIndicator = false;
             bool.TryParse(iniShortcut, out isShowIndicator);
             shortcutToggle.isOn = isShowIndicator;
+        }
+
+        // 初始化无障碍 Toggle
+        if (accessibilityToggle != null)
+        {
+            string iniAcc = configFileReader?.GetValue("Accessibility", "ScreenReader");
+            bool accOn = false;
+            if (!string.IsNullOrEmpty(iniAcc)) bool.TryParse(iniAcc, out accOn);
+            accessibilityToggle.isOn = accOn;
+            accessibilityToggle.onValueChanged.AddListener(OnAccessibilityToggled);
+            // 应用到 ScreenTextReader
+            ScreenTextReader.SetEnabled(accOn);
         }
 
         // 读取并初始化 Cursor 大小 Slider（Slider value = 0..20，对应实际像素 40..60）
@@ -368,6 +382,13 @@ public class ConfigurationManager : MonoBehaviour
             var iniWriter = new IniFileWriter(configFilePath);
             iniWriter.WriteValue("Cursor", "CursorBaseHeight", displayValue.ToString());
         }
+
+        // 保存无障碍开关
+        if (accessibilityToggle != null)
+        {
+            var iniWriter = new IniFileWriter(configFilePath);
+            iniWriter.WriteValue("Accessibility", "ScreenReader", accessibilityToggle.isOn.ToString());
+        }
     }
 
     // Slider 回调：实时更新 OsuCursor 的基准高度
@@ -382,5 +403,10 @@ public class ConfigurationManager : MonoBehaviour
         {
             osu.SetBaseHeight(displayValue);
         }
+    }
+
+    private void OnAccessibilityToggled(bool val)
+    {
+        ScreenTextReader.SetEnabled(val);
     }
 }
