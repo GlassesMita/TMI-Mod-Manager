@@ -2,6 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
+using UnityEngine.InputSystem.EnhancedTouch;
+using System.Runtime.InteropServices;
+using System.Diagnostics;
 
 public class Logger : MonoBehaviour
 {
@@ -13,11 +16,21 @@ public class Logger : MonoBehaviour
         InitializeLogFilePath();
     }
 
+    public static void Log(string message)
+    {
+        if (string.IsNullOrEmpty(logFilePath))
+        {
+            InitializeLogFilePath();
+        }
+
+        string logMessage = $"[{System.DateTime.Now:yyyy/MM/dd HH:mm:ss}] {message}";
+        File.AppendAllText(logFilePath, logMessage + System.Environment.NewLine);
+    }
+
     private static void InitializeLogFilePath()
     {
-#if !UNITY_EDITOR && UNITY_STANDALONE_WIN
         logFilePath = Path.Combine(Application.dataPath, "..", "Logs", "Latest.Log");
-#else
+#if UNITY_EDITOR
         logFilePath = Path.Combine(Application.dataPath, "..", "EditorRuntimeLogs", "Latest.Log");
 #endif
         // 检查日志文件是否存在
@@ -32,16 +45,5 @@ public class Logger : MonoBehaviour
             Directory.CreateDirectory(Path.GetDirectoryName(logFilePath));
             File.Create(logFilePath).Dispose();
         }
-    }
-
-    public static void Log(string message)
-    {
-        if (string.IsNullOrEmpty(logFilePath))
-        {
-            InitializeLogFilePath();
-        }
-
-        string logMessage = $"[{System.DateTime.Now:yyyy/MM/dd HH:mm:ss}] {message}";
-        File.AppendAllText(logFilePath, logMessage + System.Environment.NewLine);
     }
 }

@@ -5884,6 +5884,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 733882129}
+  - component: {fileID: 733882146}
   - component: {fileID: 733882136}
   - component: {fileID: 733882128}
   - component: {fileID: 733882130}
@@ -6246,6 +6247,18 @@ MonoBehaviour:
   cursorSprite: {fileID: 21300000, guid: fe2b4c1e98844c44284e2a55dec1022f, type: 3}
   cursorAdditiveSprite: {fileID: 21300000, guid: 03352b8e2ad70634fa2719e8bd80360d, type: 3}
   baseHeight: 40
+--- !u!114 &733882146
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 733882127}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ca75fbe43a6776c43827b4e13f34d3e1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &734410158
 GameObject:
   m_ObjectHideFlags: 0
