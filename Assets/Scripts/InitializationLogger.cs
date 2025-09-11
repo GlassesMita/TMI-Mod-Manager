@@ -27,7 +27,7 @@ public class InitializationLogger : MonoBehaviour
         Logger.Log("Device Model: " + SystemInfo.deviceModel);
         Logger.Log("Device Name: " + SystemInfo.deviceName);
         Logger.Log("Device Type: " + SystemInfo.deviceType);
-        Logger.Log("Current logged user: " + Environment.UserName);
+        Logger.Log("Current logged user: " + Environment.UserName + "\n\t(Note: if username is device name, it may this instance is running under system account.)");
         Logger.Log("===================================");
         Logger.Log("\t");
     }
