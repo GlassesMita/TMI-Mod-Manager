@@ -4,9 +4,11 @@
 ![Windows](https://img.shields.io/badge/Windows-0078D6?style=for-the-badge&logo=windows&logoColor=white)
 ![C#](https://img.shields.io/badge/C%23-239120?style=for-the-badge&logo=c-sharp&logoColor=white)
 ![Unity](https://img.shields.io/badge/Unity-100000?style=for-the-badge&logo=unity&logoColor=white)
-![Git](https://img.shields.io/badge/GIT-E44C30?style=for-the-badge&logo=git&logoColor=white)
-![Windows Terminal](https://img.shields.io/badge/windows%20terminal-4D4D4D?style=for-the-badge&logo=windows%20terminal&logoColor=white)
+<!-- ![Git](https://img.shields.io/badge/GIT-E44C30?style=for-the-badge&logo=git&logoColor=white) -->
+<!-- ![Windows Terminal](https://img.shields.io/badge/windows%20terminal-4D4D4D?style=for-the-badge&logo=windows%20terminal&logoColor=white) -->
 ![Visual Studio](https://img.shields.io/badge/Visual_Studio-5C2D91?style=for-the-badge&logo=visual%20studio&logoColor=white)
+
+[English](README_en.md) | [简体中文](README.md)<sub>\(当前文件\)</sub>
 
 ## 项目简介
 
@@ -43,6 +45,7 @@ TMI Mod Manager 是一个用于管理和组织夜雀食堂的 MOD 的工具。�
 - [x] **模组管理**: 轻松添加、删除和更新模组。
 - [x] **多语言支持**：支持中文、英文、日文、等多种语言，如果没有您需要的文件，您可以手动翻译。
 - [x] **窗口标题修改**：自动修改窗口标题，以便于识别。
+- [x] **快捷键控制**：通过内置的键盘快捷键快速执行操作。 
 - [ ] **用户友好界面**: 简洁直观的用户界面，方便操作。
 - [ ] **兼容性检查**: 自动检查模组之间的兼容性，避免冲突。
 - [ ] **Xbox 控制器支持**：可以使用 Xbox 控制器控制整个用户界面。
