@@ -4105,6 +4105,7 @@ GameObject:
   - component: {fileID: 455043060}
   - component: {fileID: 455043059}
   - component: {fileID: 455043061}
+  - component: {fileID: 455043062}
   m_Layer: 5
   m_Name: OK [Text]
   m_TagString: Untagged
@@ -4192,6 +4193,20 @@ MonoBehaviour:
   value: OK
   alterText: <OK>
   textComponent: {fileID: 455043059}
+--- !u!114 &455043062
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 455043057}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ef43b7bafee5d874698a17d9c575154b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  overrideText: 
+  targetText: {fileID: 455043059}
 --- !u!1 &468720570
 GameObject:
   m_ObjectHideFlags: 0
@@ -8187,6 +8202,7 @@ GameObject:
   - component: {fileID: 971756901}
   - component: {fileID: 971756900}
   - component: {fileID: 971756902}
+  - component: {fileID: 971756903}
   m_Layer: 5
   m_Name: Launch Text [Text]
   m_TagString: Untagged
@@ -8274,6 +8290,20 @@ MonoBehaviour:
   value: Launch
   alterText: <Launch>
   textComponent: {fileID: 971756900}
+--- !u!114 &971756903
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 971756898}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ef43b7bafee5d874698a17d9c575154b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  overrideText: 
+  targetText: {fileID: 971756900}
 --- !u!1 &995872588
 GameObject:
   m_ObjectHideFlags: 0
@@ -8286,6 +8316,7 @@ GameObject:
   - component: {fileID: 995872591}
   - component: {fileID: 995872590}
   - component: {fileID: 995872592}
+  - component: {fileID: 995872593}
   m_Layer: 5
   m_Name: Quit Text [Text]
   m_TagString: Untagged
@@ -8373,6 +8404,20 @@ MonoBehaviour:
   value: Exit
   alterText: <Exit>
   textComponent: {fileID: 995872590}
+--- !u!114 &995872593
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 995872588}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ef43b7bafee5d874698a17d9c575154b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  overrideText: 
+  targetText: {fileID: 995872590}
 --- !u!1 &1013765230
 GameObject:
   m_ObjectHideFlags: 0
@@ -12503,6 +12548,7 @@ GameObject:
   - component: {fileID: 1559200948}
   - component: {fileID: 1559200947}
   - component: {fileID: 1559200949}
+  - component: {fileID: 1559200950}
   m_Layer: 5
   m_Name: OK [Text]
   m_TagString: Untagged
@@ -12590,6 +12636,20 @@ MonoBehaviour:
   value: SaveConfig
   alterText: <SaveConfig>
   textComponent: {fileID: 1559200947}
+--- !u!114 &1559200950
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1559200945}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ef43b7bafee5d874698a17d9c575154b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  overrideText: 
+  targetText: {fileID: 1559200947}
 --- !u!1 &1596700220
 GameObject:
   m_ObjectHideFlags: 0
