@@ -8,7 +8,7 @@
 <!-- ![Windows Terminal](https://img.shields.io/badge/windows%20terminal-4D4D4D?style=for-the-badge&logo=windows%20terminal&logoColor=white) -->
 ![Visual Studio](https://img.shields.io/badge/Visual_Studio-5C2D91?style=for-the-badge&logo=visual%20studio&logoColor=white)
 
-[English](README_en.md) | [简体中文](README.md)<sub>\(当前文件\)</sub>
+[English](README_en.md) | [简体中文](README.md)<sub>\(当前文件\)</sub> | [日本語](REAMDE_ja.md)
 
 **本项目使用 GNU GPL 3 许可证**
 
