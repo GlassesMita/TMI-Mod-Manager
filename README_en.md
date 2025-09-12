@@ -8,7 +8,7 @@
 <!-- ![Windows Terminal](https://img.shields.io/badge/windows%20terminal-4D4D4D?style=for-the-badge&logo=windows%20terminal&logoColor=white) -->
 ![Visual Studio](https://img.shields.io/badge/Visual_Studio-5C2D91?style=for-the-badge&logo=visual%20studio&logoColor=white)
 
-[English](README_en.md)<sub>\(Current File\)</sub> | [Simplified Chinese](README.md)
+[English](README_en.md)<sub>\(Current File\)</sub> | [Simplified Chinese](README.md) | {Japanese}(READEME_ja.md)
 
 **This Project using GNU GPL 3 License**
 
@@ -47,7 +47,7 @@ Whether you're a programmer, artist, musician, planner (is that even necessary?)
 - [x] **Multi-language Support**: Supports Chinese, English, Japanese, and other languages. If you don't have the file you need, you can translate it manually.
 - [x] **Window Title Modification**: Automatically modify window titles for easier identification.
 - [x] **Shortcut Control**: Quickly perform operations with built-in keyboard shortcuts.
-- [x] **Speak UI Text**: When you right click the the text, you will listening the sound of this text.
+- [x] **Speak UI Text**: When you right click the the text, you will hear the sound of this text.
 - [ ] **User-Friendly Interface**: Simple and intuitive user interface for easy operation.
 - [ ] **Compatibility Check**: Automatically check compatibility between mods to avoid conflicts.
 - [ ] **Xbox Controller Support**: Use an Xbox controller to control the entire user interface.
