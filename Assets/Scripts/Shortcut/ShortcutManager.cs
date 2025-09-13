@@ -2,6 +2,7 @@ using UnityEngine;
 using System;
 using System.Collections.Generic;
 using UnityEngine.Events;
+using UnityEngine.UI;
 
 namespace Shortcut
 {
@@ -19,6 +20,9 @@ namespace Shortcut
 
     public class ShortcutManager : MonoBehaviour
     {
+        [Header("侦测 Console 打开时禁用")]
+        public GameObject ConsoleEmulatorWindow;
+
         [Header("是否显示快捷键指示器")]
         public bool showShortcutIndicator = true;
 
@@ -48,6 +52,18 @@ namespace Shortcut
 
         void Update()
         {
+            bool consoleActive = ConsoleEmulatorWindow != null && ConsoleEmulatorWindow.activeInHierarchy;
+            if (consoleActive)
+                return;
+            else
+            {
+                // 确保指示器状态正确
+                foreach (var entry in shortcuts)
+                {
+                    if (entry.indicator != null)
+                        entry.indicator.SetActive(showShortcutIndicator);
+                }
+            }
             foreach (var entry in shortcuts)
             {
                 if (entry.key == KeyCode.None) continue;
