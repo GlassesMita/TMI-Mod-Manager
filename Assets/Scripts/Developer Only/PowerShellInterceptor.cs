@@ -15,6 +15,18 @@ public class PowerShellInterceptor : MonoBehaviour
     [SerializeField] private ScrollRect scrollRect;   // 用于自动滚动的ScrollRect
     [SerializeField] private Font consoleFont;        // 新增：指定支持非ASCII字符的字体
 
+    [SerializeField] private bool passwd1IsCorrect = false; // 用于调试的密码标志
+
+    [SerializeField] private bool passwd2IsCorrect = false; // 用于调试的密码标志
+
+    [SerializeField] private InputField password1Input; // 输入密码1的InputField
+    [SerializeField] private InputField password2Input; // 输入密码2的InputField
+
+    [SerializeField] private Button submitButton; // 提交按钮
+
+    [SerializeField] private GameObject passwdPanelCover; // 密码面板覆盖物
+
+    [SerializeField] private Text passwordIncorrectText; // 密码错误提示文本
     private string currentDirectory;                  // 当前工作目录
     private StringBuilder outputBuffer = new StringBuilder(); // 输出缓存
     private Process powershellProcess;                // PowerShell进程实例
@@ -292,6 +304,46 @@ public class PowerShellInterceptor : MonoBehaviour
         {
             powershellProcess.Kill();
             powershellProcess.Dispose();
+        }
+    }
+
+    public void OnSubmitPasswords()
+    {
+        if (password1Input == null || password2Input == null)
+        {
+            passwordIncorrectText.text = "No password(s) submitted.";
+            Logger.Log("No password(s) submitted.");
+            return;
+        }
+
+        if (password1Input.text == "吾等所望，那七声的哀叹。" || password1Input.text == "我們盼望，七聲歎息。" || password1Input.text == "We thirst for the seven wailings.")
+        {
+            passwd1IsCorrect = true;
+        }
+        else
+        {
+            passwd1IsCorrect = false;
+        }
+        if (password2Input.text == "吾等犹记，杰里科的古则。" || password2Input.text == "我們記得，耶利哥的古則。" || password2Input.text == "We bear the koan of Jericho.")
+        {
+            passwd2IsCorrect = true;
+        }
+        else
+        {
+            passwd2IsCorrect = false;
+        }
+
+        if (passwd1IsCorrect && passwd2IsCorrect)
+        {
+            // 密码正确，隐藏覆盖物
+            passwdPanelCover.SetActive(false);
+            Logger.Log("Casket Shittin:\n\t\t\tPassword accepted.\tWelcome to Shittim Chest, " + Environment.UserName + " Sensei.");
+        }
+        else
+        {
+            // 密码错误，提示用户
+            passwordIncorrectText.text = "Incorrect password(s). Please try again.";
+            Logger.Log("Casket Shittin:\n\t\t\tIncorrect password(s) entered by " + Environment.UserName + ". Access denied.");
         }
     }
 }
