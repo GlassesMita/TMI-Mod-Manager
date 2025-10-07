@@ -1,11 +1,13 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
-using System.Text.RegularExpressions;
 
+// Single, clean implementation of IniFileWriter
 public class IniFileWriter
 {
-    private string filePath;
+    private readonly string filePath;
 
     public IniFileWriter(string path)
     {
@@ -14,7 +16,8 @@ public class IniFileWriter
 
     private bool IsValidSectionLine(string line, string targetSection = null)
     {
-        var trimmedLine = line.Trim();
+        var trimmedLine = line?.Trim();
+        if (string.IsNullOrEmpty(trimmedLine)) return false;
         if (trimmedLine.StartsWith("[") && trimmedLine.EndsWith("]"))
         {
             if (targetSection != null)
@@ -29,79 +32,191 @@ public class IniFileWriter
 
     public void WriteValue(string section, string key, string value)
     {
-        StringBuilder sb = new StringBuilder();
+        WriteValues(section, key, new[] { value });
+    }
+
+    public void WriteValues(string section, string key, IEnumerable<string> values)
+    {
+        EnsureDirectoryExists();
+        string serialized = string.Join(",", values ?? Array.Empty<string>());
+
+        string tempPath = filePath + ".tmp";
+        string backupPath = filePath + ".bak";
+
+        var output = new List<string>();
+
         if (!File.Exists(filePath))
         {
-            sb.AppendLine($"[{section}]");
-            sb.AppendLine($"{key}={value}");
+            output.Add($"[{section}]");
+            output.Add($"{key}={serialized}");
+            File.WriteAllLines(tempPath, output, Encoding.UTF8);
+            ReplaceFile(tempPath, filePath, backupPath);
+            return;
         }
-        else
+
+        var lines = File.ReadAllLines(filePath, Encoding.UTF8);
+
+        bool inSection = false;
+        bool wroteKey = false;
+        bool sectionExists = false;
+
+        for (int i = 0; i < lines.Length; i++)
         {
-            var lines = File.ReadAllLines(filePath);
-            bool sectionFound = false;
-            bool keyWritten = false;
+            var raw = lines[i];
+            var trimmed = raw?.Trim();
 
-            for (int i = 0; i < lines.Length; i++)
+            if (IsValidSectionLine(raw, section))
             {
-                var line = lines[i];
+                sectionExists = true;
+                inSection = true;
+                output.Add(raw);
+                continue;
+            }
 
-                if (IsValidSectionLine(line, section))
+            if (inSection)
+            {
+                if (IsValidSectionLine(raw))
                 {
-                    sectionFound = true;
-                    sb.AppendLine(line);
+                    if (!wroteKey)
+                    {
+                        output.Add($"{key}={serialized}");
+                        wroteKey = true;
+                    }
+                    output.Add(raw);
+                    inSection = false;
                     continue;
                 }
 
-                // 如果进入了目标 section
-                if (sectionFound)
+                if (!string.IsNullOrEmpty(trimmed) && trimmed.StartsWith(key + "=", StringComparison.OrdinalIgnoreCase))
                 {
-                    // 如果遇到下一个 section，且还没写 key，则插入 key
-                    if (IsValidSectionLine(line))
+                    if (!wroteKey)
                     {
-                        if (!keyWritten)
-                        {
-                            sb.AppendLine($"{key}={value}");
-                            keyWritten = true;
-                        }
-                        sb.AppendLine(line);
-                        sectionFound = false;
-                        continue;
+                        output.Add($"{key}={serialized}");
+                        wroteKey = true;
                     }
-
-                    // 如果是目标 key，则替换
-                    if (line.TrimStart().StartsWith($"{key}=", StringComparison.OrdinalIgnoreCase))
-                    {
-                        if (!keyWritten)
-                        {
-                            sb.AppendLine($"{key}={value}");
-                            keyWritten = true;
-                        }
-                        else
-                        {
-                            // 跳过重复的 key
-                        }
-                        continue;
-                    }
+                    continue; // skip original key line(s)
                 }
-
-                sb.AppendLine(line);
             }
 
-            // 如果文件结尾还在目标 section 且没写 key，则追加
-            if (sectionFound && !keyWritten)
-            {
-                sb.AppendLine($"{key}={value}");
-                keyWritten = true;
-            }
-
-            // 如果整个文件都没有目标 section，则追加
-            if (!sectionFound && !keyWritten)
-            {
-                sb.AppendLine($"[{section}]");
-                sb.AppendLine($"{key}={value}");
-            }
+            output.Add(raw);
         }
 
-        File.WriteAllText(filePath, sb.ToString());
+        if (inSection && !wroteKey)
+        {
+            output.Add($"{key}={serialized}");
+            wroteKey = true;
+        }
+
+        if (!sectionExists)
+        {
+            output.Add($"[{section}]");
+            output.Add($"{key}={serialized}");
+        }
+
+        File.WriteAllLines(tempPath, output, Encoding.UTF8);
+        ReplaceFile(tempPath, filePath, backupPath);
     }
+
+    private void EnsureDirectoryExists()
+    {
+        var dir = Path.GetDirectoryName(filePath);
+        if (string.IsNullOrEmpty(dir)) return;
+        if (!Directory.Exists(dir)) Directory.CreateDirectory(dir);
+    }
+
+    private void ReplaceFile(string tempPath, string targetPath, string backupPath)
+    {
+        try
+        {
+            if (File.Exists(backupPath)) File.Delete(backupPath);
+            if (File.Exists(targetPath)) File.Move(targetPath, backupPath);
+            File.Move(tempPath, targetPath);
+        }
+        catch (Exception)
+        {
+            try
+            {
+                File.Copy(tempPath, targetPath, true);
+                File.Delete(tempPath);
+            }
+            catch { }
+        }
+    }
+
+    public void DeleteKey(string section, string key)
+    {
+        if (!File.Exists(filePath)) return;
+
+        string tempPath = filePath + ".tmp";
+        string backupPath = filePath + ".bak";
+
+        var lines = File.ReadAllLines(filePath, Encoding.UTF8);
+        var output = new List<string>();
+
+        bool inSection = false;
+        for (int i = 0; i < lines.Length; i++)
+        {
+            var raw = lines[i];
+            if (IsValidSectionLine(raw, section))
+            {
+                inSection = true;
+                output.Add(raw);
+                continue;
+            }
+            if (inSection)
+            {
+                if (IsValidSectionLine(raw))
+                {
+                    inSection = false;
+                    output.Add(raw);
+                    continue;
+                }
+
+                if (!string.IsNullOrEmpty(raw) && raw.TrimStart().StartsWith(key + "=", StringComparison.OrdinalIgnoreCase))
+                {
+                    continue; // skip this key line
+                }
+            }
+            output.Add(raw);
+        }
+
+        File.WriteAllLines(tempPath, output, Encoding.UTF8);
+        ReplaceFile(tempPath, filePath, backupPath);
+    }
+
+    public void DeleteSection(string section)
+    {
+        if (!File.Exists(filePath)) return;
+
+        string tempPath = filePath + ".tmp";
+        string backupPath = filePath + ".bak";
+
+        var lines = File.ReadAllLines(filePath, Encoding.UTF8);
+        var output = new List<string>();
+
+        bool inSection = false;
+        for (int i = 0; i < lines.Length; i++)
+        {
+            var raw = lines[i];
+            if (IsValidSectionLine(raw, section))
+            {
+                inSection = true;
+                continue;
+            }
+            if (inSection)
+            {
+                if (IsValidSectionLine(raw))
+                {
+                    inSection = false;
+                    output.Add(raw);
+                }
+                continue;
+            }
+            output.Add(raw);
+        }
+
+        File.WriteAllLines(tempPath, output, Encoding.UTF8);
+        ReplaceFile(tempPath, filePath, backupPath);
+    }
+
 }

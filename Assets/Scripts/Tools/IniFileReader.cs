@@ -13,6 +13,44 @@ public class IniFileReader : IDisposable
         LoadWithEncoding(filePath);
     }
 
+    // 返回所有节名（不含方括号）
+    public List<string> GetSections()
+    {
+        return new List<string>(data.Keys);
+    }
+
+    // 返回指定节下的所有键名
+    public List<string> GetKeys(string section)
+    {
+        if (data.TryGetValue(section, out var sectionData))
+        {
+            return new List<string>(sectionData.Keys);
+        }
+        return new List<string>();
+    }
+
+    // TryGet 风格安全读取
+    public bool TryGetValue(string section, string key, out string value)
+    {
+        value = null;
+        if (data.TryGetValue(section, out var sectionData) && sectionData.TryGetValue(key, out value))
+        {
+            return true;
+        }
+        value = null;
+        return false;
+    }
+
+    public bool HasSection(string section)
+    {
+        return data.ContainsKey(section);
+    }
+
+    public bool HasKey(string section, string key)
+    {
+        return data.TryGetValue(section, out var sectionData) && sectionData.ContainsKey(key);
+    }
+
     private void LoadWithEncoding(string filePath)
     {
         if (!File.Exists(filePath))

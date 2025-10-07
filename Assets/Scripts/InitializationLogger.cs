@@ -15,7 +15,46 @@ public class InitializationLogger : MonoBehaviour
         Logger.Log("Application Version: " + appVersion);
         Logger.Log("Build with Unity " + Application.unityVersion);
         Logger.Log("Running From: " + Process.GetCurrentProcess().MainModule.FileName);
-        #if UNITY_EDITOR
+
+        // 检测是否为爆出 CVE-2025-59489 漏洞的 Unity 2021.3.28f1 Mono Non-development x64 播放器版本，通过 SHA-1 和 MD5 进行检验，原始版本的 SHA-1 值为 f533ffe6a197876244aed60fe1c2070def962c73, MD5 值为 3efb0fce3c5c6b33d399172b6d366596
+        #if UNITY_STANDALONE_WIN
+        try
+        {
+            Logger.Log("\t");
+            // 在下面获取 UnityPlayer.dll 的 SHA1 & MD5
+            string unityPlayerPath = Path.Combine(Application.dataPath, "..", "UnityPlayer.dll");
+            if (File.Exists(unityPlayerPath))
+            {
+                using (var sha1 = System.Security.Cryptography.SHA1.Create())
+                using (var md5 = System.Security.Cryptography.MD5.Create())
+                using (var stream = File.OpenRead(unityPlayerPath))
+                {
+                    var sha1Hash = BitConverter.ToString(sha1.ComputeHash(stream)).Replace("-", "").ToLowerInvariant();
+                    stream.Position = 0; // 重置流位置以重新计算 MD5
+                    var md5Hash = BitConverter.ToString(md5.ComputeHash(stream)).Replace("-", "").ToLowerInvariant();
+
+                    if (sha1Hash == "f533ffe6a197876244aed60fe1c2070def962c73" && md5Hash == "3efb0fce3c5c6b33d399172b6d366596")
+                    {
+                        Logger.Log(Logger.LogLevel.Warning, " ! Detected vulnerable UnityPlayer.dll version (CVE-2025-59489). Please update to a patched version.");
+                        Logger.Log(Logger.LogLevel.Warning, " ! UnityPlayer.dll SHA1: " + sha1Hash);
+                        Logger.Log(Logger.LogLevel.Warning, " ! UnityPlayer.dll MD5: " + md5Hash);
+                        Logger.Log(Logger.LogLevel.Warning, " You can download the patcher(version 1.2.0) from the link below:");
+                        Logger.Log(Logger.LogLevel.Warning, " \thttps://security-patches.unity.com/bc0977e0-21a9-4f6e-9414-4f44b242110a/unity-patcher/UnityApplicationPatcher-1.2.0-Win.zip");
+                        Logger.Log("\t");
+                    }
+                }
+            }
+            else
+            {
+                Logger.Log("UnityPlayer.dll not found at expected path: " + unityPlayerPath);
+            }
+        }
+        catch (Exception ex)
+        {
+            Logger.Log(Logger.LogLevel.Error, "Error computing UnityPlayer.dll hashes: " + ex.Message);
+        }
+        #endif
+#if UNITY_EDITOR
         Logger.Log("--- Running in Editor Environment ---");
         #endif
         Logger.Log("\t");
@@ -30,7 +69,14 @@ public class InitializationLogger : MonoBehaviour
         Logger.Log("Device Model: " + SystemInfo.deviceModel);
         Logger.Log("Device Name: " + SystemInfo.deviceName);
         Logger.Log("Device Type: " + SystemInfo.deviceType);
-        Logger.Log("Current logged user: " + Environment.UserName + "\n\t\t\t(Note: if username is device name, it may this instance is running under system account.)");
+        if (Environment.UserName == SystemInfo.deviceName + "$")
+        {
+            Logger.Log(Logger.LogLevel.Warning, "Current logged user: " + Environment.UserName + "\n\t\t\t(Note: if username is device name, it may this instance is running under system account.)");
+        }
+        else
+        {
+            Logger.Log(Logger.LogLevel.Info, "Current logged user: " + Environment.UserName);
+        }
         Logger.Log("===================================");
         Logger.Log("\t");
     }
