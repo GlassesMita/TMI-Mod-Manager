@@ -44,20 +44,18 @@ public class ConsoleEmulator : MonoBehaviour
     {
         try
         {
-            using (Process process = new Process())
-            {
-                process.StartInfo.FileName = "pwsh.exe";
-                process.StartInfo.Arguments = "$PSVersionTable.PSVersion | Select-Object -ExpandProperty Version";
-                process.StartInfo.UseShellExecute = false;
-                process.StartInfo.RedirectStandardOutput = true;
-                process.StartInfo.CreateNoWindow = true;
-                
-                process.Start();
-                string output = process.StandardOutput.ReadToEnd();
-                process.WaitForExit();
-                
-                return output.Trim();
-            }
+            using Process process = new Process();
+            process.StartInfo.FileName = "pwsh.exe";
+            process.StartInfo.Arguments = "$PSVersionTable.PSVersion | Select-Object -ExpandProperty Version";
+            process.StartInfo.UseShellExecute = false;
+            process.StartInfo.RedirectStandardOutput = true;
+            process.StartInfo.CreateNoWindow = true;
+
+            process.Start();
+            string output = process.StandardOutput.ReadToEnd();
+            process.WaitForExit();
+
+            return output.Trim();
         }
         catch
         {
@@ -114,41 +112,39 @@ public class ConsoleEmulator : MonoBehaviour
         {
             try
             {
-                using (Process process = new Process())
+                using Process process = new Process();
+                process.StartInfo.FileName = "pwsh.exe";
+                process.StartInfo.Arguments = $"-Command \"{command}\"";
+                process.StartInfo.WorkingDirectory = currentDirectory;
+                process.StartInfo.UseShellExecute = false;
+                process.StartInfo.RedirectStandardOutput = true;
+                process.StartInfo.RedirectStandardError = true;
+                process.StartInfo.CreateNoWindow = true;
+                process.StartInfo.StandardOutputEncoding = Encoding.UTF8;
+                process.StartInfo.StandardErrorEncoding = Encoding.UTF8;
+
+                // 输出数据接收事件
+                process.OutputDataReceived += (sender, e) =>
                 {
-                    process.StartInfo.FileName = "pwsh.exe";
-                    process.StartInfo.Arguments = $"-Command \"{command}\"";
-                    process.StartInfo.WorkingDirectory = currentDirectory;
-                    process.StartInfo.UseShellExecute = false;
-                    process.StartInfo.RedirectStandardOutput = true;
-                    process.StartInfo.RedirectStandardError = true;
-                    process.StartInfo.CreateNoWindow = true;
-                    process.StartInfo.StandardOutputEncoding = Encoding.UTF8;
-                    process.StartInfo.StandardErrorEncoding = Encoding.UTF8;
-
-                    // 输出数据接收事件
-                    process.OutputDataReceived += (sender, e) => 
+                    if (!string.IsNullOrEmpty(e.Data))
                     {
-                        if (!string.IsNullOrEmpty(e.Data))
-                        {
-                            AppendOutput(e.Data + "\n");
-                        }
-                    };
+                        AppendOutput(e.Data + "\n");
+                    }
+                };
 
-                    // 错误数据接收事件
-                    process.ErrorDataReceived += (sender, e) => 
+                // 错误数据接收事件
+                process.ErrorDataReceived += (sender, e) =>
+                {
+                    if (!string.IsNullOrEmpty(e.Data))
                     {
-                        if (!string.IsNullOrEmpty(e.Data))
-                        {
-                            AppendOutput($"错误: {e.Data}\n");
-                        }
-                    };
+                        AppendOutput($"错误: {e.Data}\n");
+                    }
+                };
 
-                    process.Start();
-                    process.BeginOutputReadLine();
-                    process.BeginErrorReadLine();
-                    process.WaitForExit();
-                }
+                process.Start();
+                process.BeginOutputReadLine();
+                process.BeginErrorReadLine();
+                process.WaitForExit();
             }
             catch (Exception ex)
             {

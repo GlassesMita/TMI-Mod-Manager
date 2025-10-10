@@ -29,7 +29,7 @@ public class ModInstaller : MonoBehaviour
         selectFileButton.onClick.AddListener(OpenFileSelector);
         confirmButton.onClick.AddListener(InstallConfirmed);
         cancelButton.onClick.AddListener(HideConfirmDialog);
-        languageCode = localizationManager.GetValue("Language", "DisplayLanguage");
+        languageCode = localizationManager.GetValue("Localization", "DisplayLanguage");
     }
 
     void OpenFileSelector()
@@ -44,10 +44,8 @@ public class ModInstaller : MonoBehaviour
         string dialogTitle = "Select File"; // 默认值
         if (File.Exists(localizationPath))
         {
-            using (var iniReader = new IniFileReader(localizationPath))
-            {
-                dialogTitle = iniReader.GetValue("Localization", "SelectFile") ?? dialogTitle;
-            }
+            using var iniReader = new IniFileReader(localizationPath);
+            dialogTitle = iniReader.GetValue("Localization", "SelectFile") ?? dialogTitle;
         }
         var paths = StandaloneFileBrowser.OpenFilePanel(dialogTitle, "", extensions, true);
 
@@ -69,47 +67,43 @@ public class ModInstaller : MonoBehaviour
     {
         try
         {
-            using (ZipArchive archive = ZipFile.OpenRead(zipFilePath))
+            using ZipArchive archive = ZipFile.OpenRead(zipFilePath);
+            // 检查是否存在 Manifest.ini 文件
+            var manifestEntry = archive.GetEntry("Manifest.ini");
+            if (manifestEntry == null)
             {
-                // 检查是否存在 Manifest.ini 文件
-                var manifestEntry = archive.GetEntry("Manifest.ini");
-                if (manifestEntry == null)
-                {
-                    Debug.LogError("Manifest.ini file not found in the archive.");
-                    return false;
-                }
+                Debug.LogError("Manifest.ini file not found in the archive.");
+                return false;
+            }
 
-                // 读取 Manifest.ini 文件内容
-                using (var tempStream = new MemoryStream())
+            // 读取 Manifest.ini 文件内容
+            using (var tempStream = new MemoryStream())
+            {
+                manifestEntry.Open().CopyTo(tempStream);
+                tempStream.Position = 0;
+
+                using var tempFile = new StreamReader(tempStream);
+                var tempPath = Path.GetTempFileName();
+                File.WriteAllText(tempPath, tempFile.ReadToEnd());
+
+                using (var iniReader = new IniFileReader(tempPath))
                 {
-                    manifestEntry.Open().CopyTo(tempStream);
-                    tempStream.Position = 0;
-                    
-                    using (var tempFile = new StreamReader(tempStream))
+                    pluginName = iniReader.GetValue("Plugin", "pluginName");
+                    version = iniReader.GetValue("Plugin", "version");
+
+                    // 验证 INI 内容是否非空
+                    if (string.IsNullOrEmpty(pluginName) || string.IsNullOrEmpty(version))
                     {
-                        var tempPath = Path.GetTempFileName();
-                        File.WriteAllText(tempPath, tempFile.ReadToEnd());
-                        
-                        using (var iniReader = new IniFileReader(tempPath))
-                        {
-                            pluginName = iniReader.GetValue("Plugin", "pluginName");
-                            version = iniReader.GetValue("Plugin", "version");
-
-                            // 验证 INI 内容是否非空
-                            if (string.IsNullOrEmpty(pluginName) || string.IsNullOrEmpty(version))
-                            {
-                                Debug.LogError("Manifest.ini file is missing required fields.");
-                                return false;
-                            }
-                        }
-                        
-                        File.Delete(tempPath);
+                        Debug.LogError("Manifest.ini file is missing required fields.");
+                        return false;
                     }
                 }
 
-                // 校验逻辑示例：确保所有文件都存在
-                return archive.Entries.Any(entry => !string.IsNullOrEmpty(entry.Name));
+                File.Delete(tempPath);
             }
+
+            // 校验逻辑示例：确保所有文件都存在
+            return archive.Entries.Any(entry => !string.IsNullOrEmpty(entry.Name));
         }
         catch (System.Exception ex)
         {

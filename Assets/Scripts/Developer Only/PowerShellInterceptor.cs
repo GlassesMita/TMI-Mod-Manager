@@ -81,25 +81,23 @@ public class PowerShellInterceptor : MonoBehaviour
     {
         try
         {
-            using (Process process = new Process())
-            {
-                process.StartInfo.FileName = "pwsh.exe";
-                // 新增：强制使用UTF-8编码输出
-                process.StartInfo.Arguments = "-Command [Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $PSVersionTable.PSVersion";
-                process.StartInfo.UseShellExecute = false;
-                process.StartInfo.RedirectStandardOutput = true;
-                process.StartInfo.RedirectStandardError = true;
-                process.StartInfo.CreateNoWindow = true;
-                process.StartInfo.StandardOutputEncoding = Encoding.UTF8;
-                process.StartInfo.StandardErrorEncoding = Encoding.UTF8;
+            using Process process = new Process();
+            process.StartInfo.FileName = "pwsh.exe";
+            // 新增：强制使用UTF-8编码输出
+            process.StartInfo.Arguments = "-Command [Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $PSVersionTable.PSVersion";
+            process.StartInfo.UseShellExecute = false;
+            process.StartInfo.RedirectStandardOutput = true;
+            process.StartInfo.RedirectStandardError = true;
+            process.StartInfo.CreateNoWindow = true;
+            process.StartInfo.StandardOutputEncoding = Encoding.UTF8;
+            process.StartInfo.StandardErrorEncoding = Encoding.UTF8;
 
-                process.Start();
-                string output = process.StandardOutput.ReadToEnd();
-                process.WaitForExit();
+            process.Start();
+            string output = process.StandardOutput.ReadToEnd();
+            process.WaitForExit();
 
-                // 新增：清理输出中的格式字符
-                return StripAnsiCodes(output).Trim();
-            }
+            // 新增：清理输出中的格式字符
+            return StripAnsiCodes(output).Trim();
         }
         catch (Exception ex)
         {

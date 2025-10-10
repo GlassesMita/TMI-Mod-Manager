@@ -4,6 +4,7 @@ using UnityEngine;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System;
+using UnityEditor.PackageManager.UI;
 
 public class LaunchApp : MonoBehaviour
 {
@@ -13,13 +14,15 @@ public class LaunchApp : MonoBehaviour
 
     public void LaunchApplication()
     {
-        if(isSteamRelease == true)
+        if (isSteamRelease == true)
         {
             Application.OpenURL(steamUrl);
+            WindowTitleChanger.Awake();
         }
         else
         {
             Process.Start(exePath);
+            WindowTitleChanger.Awake();
         }
     }
 }

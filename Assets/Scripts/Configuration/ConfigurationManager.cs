@@ -285,14 +285,13 @@ public class ConfigurationManager : MonoBehaviour
             {
                 try
                 {
-                    using (var iniReader = new IniFileReader(filePath))
+                    using var iniReader = new IniFileReader(filePath);
+                    string languageName = iniReader.GetValue("Localization", "Language");
+                    if (!string.IsNullOrEmpty(languageName))
                     {
-                        string languageName = iniReader.GetValue("Localization", "Language");
-                        if (!string.IsNullOrEmpty(languageName))
-                        {
-                            string fileName = Path.GetFileName(filePath);
-                            result.Add((languageName, fileName));
-                        }
+                        string fileName = Path.GetFileName(filePath);
+                        result.Add((languageName, fileName));
+
                     }
                 }
                 catch (System.Exception ex)
