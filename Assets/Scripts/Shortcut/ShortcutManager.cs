@@ -90,14 +90,19 @@ namespace Shortcut
                 {
                     if (allJustDown)
                     {
-                        holdTimers[entry] = Time.time;
+                        // 只有当指示器允许显示时才开始长按计时并触发事件
+                        if (showShortcutIndicator)
+                        {
+                            holdTimers[entry] = Time.time;
+                        }
                     }
                     if (allPressed && holdTimers.ContainsKey(entry))
                     {
                         float held = Time.time - holdTimers[entry];
                         if (held >= entry.holdSeconds)
                         {
-                            entry.onKeyDown?.Invoke();
+                            if (showShortcutIndicator)
+                                entry.onKeyDown?.Invoke();
                             holdTimers.Remove(entry);
                         }
                     }
@@ -110,7 +115,8 @@ namespace Shortcut
                 {
                     if (allJustDown)
                     {
-                        entry.onKeyDown?.Invoke();
+                        if (showShortcutIndicator)
+                            entry.onKeyDown?.Invoke();
                     }
                 }
             }

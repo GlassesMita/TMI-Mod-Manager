@@ -1,5 +1,6 @@
 using System;
 using System.Runtime.InteropServices;
+using System.Reflection;
 using UnityEngine;
 using System.Diagnostics;
 using System.IO;
@@ -26,6 +27,9 @@ public class WindowTitleChanger : MonoBehaviour
 
     [DllImport("user32.dll")]
     private static extern bool IsWindowVisible(IntPtr hWnd);
+
+    [DllImport("shell32.dll")]
+    private static extern bool IsUserAnAdmin();
 #endif
 
     private static string CONFIG_SECTION = "Title";
@@ -35,7 +39,7 @@ public class WindowTitleChanger : MonoBehaviour
     // 读取KVP配置并返回标题
     private static string GetTitleFromKvp()
     {
-        string configPath = Path.Combine(Application.dataPath, "..", "AppConfig.ini");
+        string configPath = Path.Combine(Application.dataPath, "..", "AppConfig.Schale");
         string fallback = DEFAULT_TITLE ?? "UnityApp";
         if (!File.Exists(configPath)) return fallback;
         using var reader = new IniFileReader(configPath);
@@ -64,7 +68,7 @@ public class WindowTitleChanger : MonoBehaviour
             if (IsRunningAsAdmin())
             {
                 string langCode;
-                using var languageCodeMemeLoader = new IniFileReader(Path.Combine(Application.dataPath, "..", "AppConfig.ini"));
+                using var languageCodeMemeLoader = new IniFileReader(Path.Combine(Application.dataPath, "..", "AppConfig.Schale"));
                 langCode = languageCodeMemeLoader.GetValue("Localization", "DisplayLanguage");
                 if (langCode == "zh_MEMES")
                 {
@@ -78,7 +82,7 @@ public class WindowTitleChanger : MonoBehaviour
             else
             {
                 string langCode;
-                using var languageCodeMemeLoader = new IniFileReader(Path.Combine(Application.dataPath, "..", "AppConfig.ini"));
+                using var languageCodeMemeLoader = new IniFileReader(Path.Combine(Application.dataPath, "..", "AppConfig.Schale"));
                 langCode = languageCodeMemeLoader.GetValue("Localization", "DisplayLanguage");
                 if (langCode == "zh_MEMES")
                 {
@@ -103,12 +107,37 @@ public class WindowTitleChanger : MonoBehaviour
     public static bool IsRunningAsAdmin()
     {
 #if UNITY_STANDALONE_WIN && !UNITY_EDITOR
+        // 尝试通过反射使用 WindowsIdentity/WindowsPrincipal（避免在编译期直接依赖 System.Security.Principal.Windows）
         try
         {
-            // 更可靠地使用 WindowsPrincipal 检测管理员权限
-            var identity = System.Security.Principal.WindowsIdentity.GetCurrent();
-            var principal = new System.Security.Principal.WindowsPrincipal(identity);
-            return principal.IsInRole(System.Security.Principal.WindowsBuiltInRole.Administrator);
+            // 可能的完全名：System.Security.Principal.WindowsIdentity, System.Security.Principal.Windows
+            Type winIdType = Type.GetType("System.Security.Principal.WindowsIdentity, System.Security.Principal.Windows")
+                             ?? Type.GetType("System.Security.Principal.WindowsIdentity");
+            Type winPrincipalType = Type.GetType("System.Security.Principal.WindowsPrincipal, System.Security.Principal.Windows")
+                                    ?? Type.GetType("System.Security.Principal.WindowsPrincipal");
+            Type builtInRoleType = Type.GetType("System.Security.Principal.WindowsBuiltInRole, System.Security.Principal.Windows")
+                                    ?? Type.GetType("System.Security.Principal.WindowsBuiltInRole");
+
+            if (winIdType != null && winPrincipalType != null && builtInRoleType != null)
+            {
+                var getCurrent = winIdType.GetMethod("GetCurrent", BindingFlags.Public | BindingFlags.Static);
+                var identity = getCurrent.Invoke(null, null);
+                var principal = Activator.CreateInstance(winPrincipalType, new object[] { identity });
+                var adminEnum = Enum.Parse(builtInRoleType, "Administrator");
+                var isInRoleMethod = winPrincipalType.GetMethod("IsInRole", new Type[] { builtInRoleType });
+                var result = (bool)isInRoleMethod.Invoke(principal, new object[] { adminEnum });
+                return result;
+            }
+        }
+        catch
+        {
+            // 反射路径失败，回退到本地 P/Invoke
+        }
+
+        // 回退：使用较旧的 Shell32.IsUserAnAdmin（仍然可用为快速检测）
+        try
+        {
+            return IsUserAnAdmin();
         }
         catch
         {
@@ -182,7 +211,7 @@ public class WindowTitleChanger : MonoBehaviour
                 {
                     string title = GetTitleFromKvp();
                     string langCode;
-                    using var languageCodeMemeLoader = new IniFileReader(Path.Combine(Application.dataPath, "..", "AppConfig.ini"));
+                    using var languageCodeMemeLoader = new IniFileReader(Path.Combine(Application.dataPath, "..", "AppConfig.Schale"));
                     langCode = languageCodeMemeLoader.GetValue("Localization", "DisplayLanguage");
                     if (langCode == "zh_MEMES")
                     {

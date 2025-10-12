@@ -34,7 +34,7 @@ public class ConfigurationManager : MonoBehaviour
 
     void Start()
     {
-        configFilePath = Path.Combine(Application.dataPath, "..", "AppConfig.ini");
+        configFilePath = Path.Combine(Application.dataPath, "..", "AppConfig.Schale");
         LoadConfiguration();
 
         // 填充下拉框
@@ -219,7 +219,8 @@ public class ConfigurationManager : MonoBehaviour
         if (shortcutToggle == null) return;
 
         string showIndicatorValue = configFileReader?.GetValue("Shortcut", "ShowIndicator");
-        bool showIndicator = true;
+        // 当读取不到键或节时，默认视为不显示（false）
+        bool showIndicator = false;
         bool.TryParse(showIndicatorValue, out showIndicator);
         shortcutToggle.isOn = showIndicator;
 
@@ -336,7 +337,7 @@ public class ConfigurationManager : MonoBehaviour
         }
     }
 
-    // 按钮点击时调用，保存所选语言到 AppConfig.ini
+    // 按钮点击时调用，保存所选语言到 AppConfig.Schale
     public void SaveConfiguration()
     {
         if (languageDropdown.value >= 0 && languageDropdown.value < languageList.Count)

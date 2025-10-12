@@ -40,8 +40,7 @@ public class IniFileWriter
         EnsureDirectoryExists();
         string serialized = string.Join(",", values ?? Array.Empty<string>());
 
-        string tempPath = filePath + ".tmp";
-        string backupPath = filePath + ".bak";
+    string tempPath = filePath + ".tmp";
 
         var output = new List<string>();
 
@@ -50,7 +49,7 @@ public class IniFileWriter
             output.Add($"[{section}]");
             output.Add($"{key}={serialized}");
             File.WriteAllLines(tempPath, output, Encoding.UTF8);
-            ReplaceFile(tempPath, filePath, backupPath);
+            ReplaceFile(tempPath, filePath);
             return;
         }
 
@@ -114,7 +113,7 @@ public class IniFileWriter
         }
 
         File.WriteAllLines(tempPath, output, Encoding.UTF8);
-        ReplaceFile(tempPath, filePath, backupPath);
+        ReplaceFile(tempPath, filePath);
     }
 
     private void EnsureDirectoryExists()
@@ -124,12 +123,11 @@ public class IniFileWriter
         if (!Directory.Exists(dir)) Directory.CreateDirectory(dir);
     }
 
-    private void ReplaceFile(string tempPath, string targetPath, string backupPath)
+    private void ReplaceFile(string tempPath, string targetPath)
     {
         try
         {
-            if (File.Exists(backupPath)) File.Delete(backupPath);
-            if (File.Exists(targetPath)) File.Move(targetPath, backupPath);
+            if (File.Exists(targetPath)) File.Delete(targetPath);
             File.Move(tempPath, targetPath);
         }
         catch (Exception)
@@ -147,8 +145,7 @@ public class IniFileWriter
     {
         if (!File.Exists(filePath)) return;
 
-        string tempPath = filePath + ".tmp";
-        string backupPath = filePath + ".bak";
+    string tempPath = filePath + ".tmp";
 
         var lines = File.ReadAllLines(filePath, Encoding.UTF8);
         var output = new List<string>();
@@ -181,15 +178,14 @@ public class IniFileWriter
         }
 
         File.WriteAllLines(tempPath, output, Encoding.UTF8);
-        ReplaceFile(tempPath, filePath, backupPath);
+        ReplaceFile(tempPath, filePath);
     }
 
     public void DeleteSection(string section)
     {
         if (!File.Exists(filePath)) return;
 
-        string tempPath = filePath + ".tmp";
-        string backupPath = filePath + ".bak";
+    string tempPath = filePath + ".tmp";
 
         var lines = File.ReadAllLines(filePath, Encoding.UTF8);
         var output = new List<string>();
@@ -216,7 +212,7 @@ public class IniFileWriter
         }
 
         File.WriteAllLines(tempPath, output, Encoding.UTF8);
-        ReplaceFile(tempPath, filePath, backupPath);
+        ReplaceFile(tempPath, filePath);
     }
 
 }

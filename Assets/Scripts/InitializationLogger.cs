@@ -8,7 +8,7 @@ public class InitializationLogger : MonoBehaviour
 {
     public void Start()
     {
-        IniFileReader reader = new IniFileReader(Path.Combine(Application.dataPath, "..", "AppConfig.ini"));
+        IniFileReader reader = new IniFileReader(Path.Combine(Application.dataPath, "..", "AppConfig.Schale"));
         string appVersion = reader.GetValue("Config", "Version");
 
         Logger.Log("*** Initialized Application ***");

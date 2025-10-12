@@ -24,7 +24,7 @@ public class ModInstaller : MonoBehaviour
 
     void Start()
     {
-        localizationManager = new IniFileReader(Path.Combine(Application.dataPath, "..", "AppConfig.ini"));
+        localizationManager = new IniFileReader(Path.Combine(Application.dataPath, "..", "AppConfig.Schale"));
         dirPath = Path.Combine(Application.dataPath, "..", "Mods");
         selectFileButton.onClick.AddListener(OpenFileSelector);
         confirmButton.onClick.AddListener(InstallConfirmed);
@@ -38,6 +38,7 @@ public class ModInstaller : MonoBehaviour
         var extensions = new[] {
             new ExtensionFilter( "Izakaya File", "izakaya" ),
             new ExtensionFilter( "ZIP File", "zip" ),
+            new ExtensionFilter( "SchalePack File", "schalepack"),
             new ExtensionFilter( "All Files", "*" )
         };
         string localizationPath = Path.Combine(Application.streamingAssetsPath, "Localization", $"{languageCode}.ini");
