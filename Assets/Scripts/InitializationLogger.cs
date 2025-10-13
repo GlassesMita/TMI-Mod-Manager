@@ -17,7 +17,7 @@ public class InitializationLogger : MonoBehaviour
         Logger.Log("Running From: " + Process.GetCurrentProcess().MainModule.FileName);
 
         // 检测是否为爆出 CVE-2025-59489 漏洞的 Unity 2021.3.28f1 Mono Non-development x64 播放器版本，通过 SHA-1 和 MD5 进行检验，原始版本的 SHA-1 值为 f533ffe6a197876244aed60fe1c2070def962c73, MD5 值为 3efb0fce3c5c6b33d399172b6d366596
-        #if UNITY_STANDALONE_WIN
+#if UNITY_STANDALONE_WIN
         try
         {
             Logger.Log("\t");
@@ -44,14 +44,20 @@ public class InitializationLogger : MonoBehaviour
             }
             else
             {
-                Logger.Log("UnityPlayer.dll not found at expected path: " + unityPlayerPath);
+#if UNITY_EDITOR
+                Logger.Log("Running in Editor, skipping UnityPlayer.dll hash check.");
+#elif UNITY_STANDALONE_WIN
+                Logger.Log(Logger.LogLevel.Warning, "UnityPlayer.dll not found at expected path: " + unityPlayerPath);
+#else
+                Logger.Log(Logger.LogLevel.Warning, "Current we cannot support this platform, so skipping UnityPlayer.dll hash check.");
+#endif
             }
         }
         catch (Exception ex)
         {
             Logger.Log(Logger.LogLevel.Error, "Error computing UnityPlayer.dll hashes: " + ex.Message);
         }
-        #endif
+#endif
 #if UNITY_EDITOR
         Logger.Log("--- Running in Editor Environment ---");
         #endif

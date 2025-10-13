@@ -108,6 +108,8 @@ public class ConfigurationManager : MonoBehaviour
             accessibilityToggle.onValueChanged.AddListener(OnAccessibilityToggled);
             // 应用到 ScreenTextReader
             ScreenTextReader.SetEnabled(accOn);
+            // 自动保存 accessibility 改动
+            accessibilityToggle.onValueChanged.AddListener((val) => { SaveConfiguration(); });
         }
 
         // 读取并初始化 Cursor 大小 Slider（Slider value = 0..20，对应实际像素 40..60）
@@ -123,6 +125,9 @@ public class ConfigurationManager : MonoBehaviour
             float sliderValue = cursorBase - 40f;
             cursorSizeSlider.value = sliderValue;
             cursorSizeSlider.onValueChanged.AddListener(OnCursorSizeSliderChanged);
+
+            // Slider 值变更时自动保存（即时保存；如需减少写频率可改为防抖）
+            cursorSizeSlider.onValueChanged.AddListener((v) => { SaveConfiguration(); });
 
             // 更新 label 并将初始值应用到 OsuCursor（如果存在）
             float displayValue = 40f + cursorSizeSlider.value;
@@ -173,7 +178,9 @@ public class ConfigurationManager : MonoBehaviour
                 languageDropdown.value = idx;
         }
 
-        languageDropdown.onValueChanged.AddListener(OnLanguageDropdownChanged);
+    languageDropdown.onValueChanged.AddListener(OnLanguageDropdownChanged);
+    // 语言改变后自动保存
+    languageDropdown.onValueChanged.AddListener((idx) => { SaveConfiguration(); });
     }
 
     // 新增：填充分辨率下拉框
@@ -229,6 +236,14 @@ public class ConfigurationManager : MonoBehaviour
         {
             shortcutManager.showShortcutIndicator = showIndicator;
         }
+
+        // 当用户修改 Toggle 时自动保存配置并应用到 ShortcutManager
+        shortcutToggle.onValueChanged.AddListener((val) =>
+        {
+            if (shortcutManager != null)
+                shortcutManager.SetShowShortcutIndicator(val);
+            SaveConfiguration();
+        });
     }
 
     // 新增：分辨率下拉框变化时
@@ -241,6 +256,8 @@ public class ConfigurationManager : MonoBehaviour
 
             // 可选：立即应用分辨率
             ApplyResolution(selectedRes, fullscreenToggle != null && fullscreenToggle.isOn);
+            // 自动保存用户选择
+            SaveConfiguration();
         }
     }
 
@@ -254,6 +271,8 @@ public class ConfigurationManager : MonoBehaviour
         {
             string selectedRes = availableResolutions[resolutionDropdown.value];
             ApplyResolution(selectedRes, isOn);
+    // 自动保存更改
+    SaveConfiguration();
         }
     }
 

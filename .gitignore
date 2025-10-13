@@ -77,7 +77,9 @@ crashlytics-build.properties
 /[Rr][Ee][Aa][Dd][Mm][Ee]
 
 # Readme file
-[Rr][Ee][Aa][Dd][Mm][Ee]*.md
+[Rr][Ee][Aa][Dd][Mm][Ee].md
+[Rr][Ee][Aa][Dd][Mm][Ee]_[Ee][Nn].md
+[Rr][Ee][Aa][Dd][Mm][Ee]_[Jj][Aa].md
 
 # Ignore image files for README.md, to avoid clone them into local repo
 *.png
