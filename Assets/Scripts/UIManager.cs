@@ -10,6 +10,10 @@ public class UIManager : MonoBehaviour
     public Transform fileListContainer;
     public Text jsonContentText;
     public Text modNameText;
+    public Text authorText;
+    public Text versionText;
+    public Text requiredFilesText;
+    public Text filePathText;
     public Button deleteButton; // 独立的删除按钮
     public Button refreshButton; // 独立的刷新按钮
     public GameObject confirmDialog; // 确认弹窗
@@ -31,25 +35,47 @@ public class UIManager : MonoBehaviour
         }
 
         refreshButton.onClick.AddListener(RefreshFileList); // 确保这个按钮仅用于刷新功能
-        confirmButton.onClick.AddListener(DeleteConfirmed);
+    // 兼容旧绑定：RefreshFileList 调用新方法 RefreshMods
+    confirmButton.onClick.AddListener(DeleteConfirmed);
         cancelButton.onClick.AddListener(HideConfirmDialog);
-        RefreshFileList(); // 初始化时刷新一次文件列表
+        // 初始时禁用删除按钮，直到用户选择某个文件
+        if (deleteButton != null) deleteButton.interactable = false;
+        RefreshMods(); // 初始化时刷新一次文件列表
     }
 
-    public void UpdateUIWithFiles(string[] jsonFiles)
+    public void UpdateUIWithMods(string[] iniFiles)
     {
-        foreach (string file in jsonFiles)
+        foreach (string file in iniFiles)
         {
-            CreateFileButton(file);
+            CreateModButton(file);
         }
-        // 过滤掉 Data 目录下的文件
-        jsonFiles = jsonFiles.Where(file => !file.Contains(Path.Combine(Application.dataPath + ".." + "Mods"))).ToArray();
     }
 
-    void CreateFileButton(string filePath)
+    // 兼容旧代码调用：FileLoader 等处可能调用 UpdateUIWithFiles
+    public void UpdateUIWithFiles(string[] iniFiles)
     {
-        string jsonContent = File.ReadAllText(filePath);
-        PluginInfo pluginInfo = JsonUtility.FromJson<PluginInfo>(jsonContent);
+        UpdateUIWithMods(iniFiles);
+    }
+
+    void CreateModButton(string filePath)
+    {
+        // 使用 INI 读取插件元信息（期望 [Plugin] 节）
+        IniFileReader reader = null;
+        try
+        {
+            reader = new IniFileReader(filePath);
+        }
+        catch (System.Exception ex)
+        {
+            Debug.LogWarning($"无法读取 INI 文件: {filePath} - {ex.Message}");
+            return;
+        }
+
+    string pluginName = reader.GetValue("Plugin", "PluginName") ?? Path.GetFileNameWithoutExtension(filePath);
+    string author = reader.GetValue("Plugin", "Author") ?? "Unknown";
+    string version = reader.GetValue("Plugin", "Version") ?? "1.0";
+    // 使用新的 INI 节 [RequiedList] 下的 List 键
+    string[] requiredList = reader.GetValues("RequiedList", "List");
 
         GameObject buttonObj = Instantiate(fileButtonPrefab, fileListContainer);
         Text buttonText = buttonObj.GetComponentInChildren<Text>();
@@ -61,15 +87,46 @@ public class UIManager : MonoBehaviour
             return;
         }
 
-        buttonText.text = pluginInfo.pluginName; // 设置按钮文本为 pluginName
+        buttonText.text = pluginName; // 设置按钮文本为 pluginName
 
-        // 检查目录下是否存在同名 .DISABLE 文件
+        // 检查目录下是否存在同名 .Disabled 文件
         string disableFilePath = filePath + ".Disabled";
-        toggle.isOn = !File.Exists(disableFilePath); // 如果存在 .DISABLE 文件，Toggle 设置为 Off，否则设置为 On
+        toggle.isOn = !File.Exists(disableFilePath); // 如果存在 .Disabled 文件，Toggle 设置为 Off，否则设置为 On
 
-        buttonObj.GetComponent<Button>().onClick.AddListener(() => ShowJsonContent(filePath));
+        // 点击按钮时显示详情并将当前选择设置为该文件（使删除按钮可用）
+        buttonObj.GetComponent<Button>().onClick.AddListener(() =>
+        {
+            // 把 INI 字段的内容填入不同的 Text 控件
+            modNameText.text = pluginName;
+            if (authorText != null) authorText.text = author;
+            if (versionText != null) versionText.text = version;
+            if (filePathText != null) filePathText.text = filePath;
 
-        // 添加 Toggle 事件处理
+            // 依赖显示：不存在或为空时隐藏；否则显示本地化前缀和逗号分隔的依赖列表
+            if (requiredFilesText != null)
+            {
+                if (requiredList == null || requiredList.Length == 0)
+                    requiredFilesText.gameObject.SetActive(false);
+                else
+                {
+                    string prefix = GetLocalizationValue("Dependencies") ?? "Dependencies:";
+                    requiredFilesText.gameObject.SetActive(true);
+                    requiredFilesText.text = prefix + " " + string.Join(", ", requiredList);
+                }
+            }
+
+            // 兼容性检查并设置颜色
+            bool ok = CheckCompatibility(filePath, requiredList);
+            SetTextColor(requiredFilesText, ok);
+
+            // 设置待删除信息并启用删除按钮
+            filePathToDelete = filePath;
+            filesToIncludeToDelete = requiredList;
+            disableFilePathToDelete = disableFilePath;
+            if (deleteButton != null) deleteButton.interactable = true;
+        });
+
+        // 添加 Toggle 事件处理，创建/删除 .Disabled 文件
         toggle.onValueChanged.AddListener((bool isOn) =>
         {
             if (isOn)
@@ -86,10 +143,13 @@ public class UIManager : MonoBehaviour
                     File.Create(disableFilePath).Close();
                 }
             }
+            // 修改后立即刷新兼容性状态（简单方案：刷新列表）
+            RefreshMods();
         });
 
-        // 添加删除文件按钮事件
-        deleteButton.onClick.AddListener(() => ShowConfirmDialog(filePath, pluginInfo.fileInclude, disableFilePath));
+        // 初始时根据兼容性设置字体颜色
+        bool initialOk = CheckCompatibility(filePath, requiredList);
+        SetTextColor(buttonText, initialOk);
     }
 
     void ShowConfirmDialog(string filePath, string[] filesToInclude, string disableFilePath)
@@ -106,13 +166,45 @@ public class UIManager : MonoBehaviour
         confirmDialog.SetActive(false);
     }
 
-    public void DeleteConfirmed()
+    public void ConfirmDelete()
     {
-        DeleteJsonFile(filePathToDelete, filesToIncludeToDelete, disableFilePathToDelete);
+        RemoveModAndDependencies(filePathToDelete, filesToIncludeToDelete, disableFilePathToDelete);
         HideConfirmDialog();
     }
 
-    void DeleteJsonFile(string jsonFilePath, string[] filesToInclude, string disableFilePath)
+    // 保持兼容：旧的 DeleteConfirmed 名称继续工作
+    public void DeleteConfirmed()
+    {
+        ConfirmDelete();
+    }
+
+    // 保持兼容：旧的 RefreshFileList 名称继续工作
+    public void RefreshFileList()
+    {
+        RefreshMods();
+    }
+
+    // 简单的兼容性检查：验证 requiredList 中的每个文件是否存在于 Mods 目录
+    private bool CheckCompatibility(string iniPath, string[] requiredList)
+    {
+        if (requiredList == null || requiredList.Length == 0) return true;
+        string dir = Path.GetDirectoryName(iniPath);
+        foreach (var req in requiredList)
+        {
+            if (string.IsNullOrWhiteSpace(req)) continue;
+            string p = Path.Combine(dir, req.Trim());
+            if (!File.Exists(p)) return false;
+        }
+        return true;
+    }
+
+    private void SetTextColor(Text txt, bool ok)
+    {
+        if (txt == null) return;
+        txt.color = ok ? Color.black : Color.red;
+    }
+
+    void RemoveModAndDependencies(string jsonFilePath, string[] filesToInclude, string disableFilePath)
     {
         // 删除 JSON 文件
         if (File.Exists(jsonFilePath))
@@ -120,12 +212,13 @@ public class UIManager : MonoBehaviour
             File.Delete(jsonFilePath);
         }
 
-        // 删除包含的文件
+        // 删除 RequiredList 中列出的关联文件（位于同一目录）
         if (filesToInclude != null)
         {
             foreach (string includedFile in filesToInclude)
             {
-                string includedFilePath = Path.Combine(Path.GetDirectoryName(jsonFilePath), includedFile);
+                if (string.IsNullOrWhiteSpace(includedFile)) continue;
+                string includedFilePath = Path.Combine(Path.GetDirectoryName(jsonFilePath), includedFile.Trim());
                 if (File.Exists(includedFilePath))
                 {
                     File.Delete(includedFilePath);
@@ -139,13 +232,11 @@ public class UIManager : MonoBehaviour
             File.Delete(disableFilePath);
         }
 
-        // 刷新文件列表
-        // RefreshFileList();
-        SceneManager.LoadScene(currentSceneName.sceneName);
-        RefreshFileList();
+        // 刷新文件列表并检查兼容性
+        RefreshMods();
     }
 
-    public void RefreshFileList()
+    public void RefreshMods()
     {
         // 清空当前内容
         foreach (Transform child in fileListContainer)
@@ -153,17 +244,93 @@ public class UIManager : MonoBehaviour
             Destroy(child.gameObject);
         }
 
-        // 重新读取文件列表
-        string[] jsonFiles = Directory.GetFiles(Application.dataPath, "*.json");
-        UpdateUIWithFiles(jsonFiles);
+        // 重新读取 INI 文件列表，目录为 Application.dataPath/../Mods
+        string modsDir = Path.Combine(Application.dataPath, "..", "Mods");
+        if (!Directory.Exists(modsDir)) Directory.CreateDirectory(modsDir);
+
+        // 递归扫描 Mods 目录及其子目录中的所有 .ini 文件，保证结果按路径排序以便 UI 稳定
+        string[] iniFiles = Directory.GetFiles(modsDir, "*.ini", SearchOption.AllDirectories)
+            .OrderBy(p => p, System.StringComparer.OrdinalIgnoreCase)
+            .ToArray();
+
+        UpdateUIWithMods(iniFiles);
     }
 
-    void ShowJsonContent(string filePath)
+    void ShowModDetails(string filePath)
     {
-        string jsonContent = File.ReadAllText(filePath);
-        PluginInfo pluginInfo = JsonUtility.FromJson<PluginInfo>(jsonContent);
-        string includedFiles = pluginInfo.fileInclude != null ? string.Join(", ", pluginInfo.fileInclude) : "None";
-        modNameText.text = $"{pluginInfo.pluginName}";
-        jsonContentText.text = $"Author: {pluginInfo.author}\nVersion: {pluginInfo.version}\nIncluded Files: {includedFiles}\nFile Path: {filePath}";
+        // Deprecated: keep signature for compatibility but prefer button's inline handler
+        if (!File.Exists(filePath)) return;
+        try
+        {
+            using var reader = new IniFileReader(filePath);
+            string pluginName = reader.GetValue("Plugin", "PluginName") ?? Path.GetFileNameWithoutExtension(filePath);
+            string author = reader.GetValue("Plugin", "Author") ?? "Unknown";
+            string version = reader.GetValue("Plugin", "Version") ?? "1.0";
+            string[] requiredList = reader.GetValues("RequiedList", "List");
+            string includedFiles = (requiredList != null && requiredList.Length > 0) ? string.Join(", ", requiredList) : "None";
+            modNameText.text = pluginName;
+            if (authorText != null) authorText.text = author;
+            if (versionText != null) versionText.text = version;
+            if (requiredFilesText != null) requiredFilesText.text = includedFiles;
+            if (filePathText != null) filePathText.text = filePath;
+
+            // also set selection info for delete flow
+            filePathToDelete = filePath;
+            filesToIncludeToDelete = requiredList;
+            disableFilePathToDelete = filePath + ".Disabled";
+            if (deleteButton != null) deleteButton.interactable = true;
+            // 兼容性检查
+            bool ok = CheckCompatibility(filePath, requiredList);
+            SetTextColor(requiredFilesText, ok);
+        }
+        catch (System.Exception ex)
+        {
+            Debug.LogWarning($"ShowJsonContent failed for {filePath}: {ex.Message}");
+        }
+    }
+
+    // 从 StreamingAssets/Localization/{lang}.ini 读取 [Localization] 节的键值
+    private string GetLocalizationValue(string key)
+    {
+        try
+        {
+            // 首先读取 AppConfig.Schale 中记录的 DisplayLanguage（如果存在）
+            string appConfigPath = Path.Combine(Application.dataPath, "..", "AppConfig.Schale");
+            string langCode = null;
+            if (File.Exists(appConfigPath))
+            {
+                try
+                {
+                    var cfg = new IniFileReader(appConfigPath);
+                    langCode = cfg.GetValue("Localization", "DisplayLanguage");
+                }
+                catch { langCode = null; }
+            }
+
+            // 构造本地化文件路径
+            string localizationPath = Path.Combine(Application.streamingAssetsPath, "Localization");
+            if (string.IsNullOrEmpty(langCode))
+            {
+                // 尝试选第一个可用的语言文件
+                if (Directory.Exists(localizationPath))
+                {
+                    var files = Directory.GetFiles(localizationPath, "*.ini");
+                    if (files.Length > 0)
+                        langCode = Path.GetFileNameWithoutExtension(files[0]);
+                }
+            }
+
+            if (string.IsNullOrEmpty(langCode)) return null;
+
+            string locFile = Path.Combine(localizationPath, langCode + ".ini");
+            if (!File.Exists(locFile)) return null;
+
+            var reader = new IniFileReader(locFile);
+            return reader.GetValue("Localization", key);
+        }
+        catch
+        {
+            return null;
+        }
     }
 }

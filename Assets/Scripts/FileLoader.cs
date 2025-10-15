@@ -1,16 +1,17 @@
 using UnityEngine;
 using System.IO;
-using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 using System.Linq; // 添加了 System.Linq 命名空间以使用 Where 方法
 
 public class FileLoader : MonoBehaviour
 {
-    private string directoryPath;
+
     public GameObject statusTextPrefab;
     public Text iniContentText;
     public UIManager uiManager;
     public CurrentSceneName currentSceneName;
+    private string directoryPath;
 
     void Start()
     {
@@ -55,7 +56,6 @@ public class FileLoader : MonoBehaviour
     {
         foreach (Transform child in uiManager.fileListContainer)
         {
-            Destroy(child.gameObject);
         }
         iniContentText.text = "";
         SceneManager.LoadScene(currentSceneName.sceneName);
