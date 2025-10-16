@@ -133,14 +133,30 @@ public class UIManager : MonoBehaviour
             {
                 if (File.Exists(disableFilePath))
                 {
-                    File.Delete(disableFilePath);
+                    try
+                    {
+                        File.Delete(disableFilePath);
+                        Logger.Log($"Enabled {pluginName} (removed {disableFilePath})");
+                    }
+                    catch (System.Exception ex)
+                    {
+                        Logger.Log(Logger.LogLevel.Warning, $"Failed to remove disable file {disableFilePath}: {ex.Message}");
+                    }
                 }
             }
             else
             {
                 if (!File.Exists(disableFilePath))
                 {
-                    File.Create(disableFilePath).Close();
+                    try
+                    {
+                        File.Create(disableFilePath).Close();
+                        Logger.Log($"Disabled {pluginName} (created {disableFilePath})");
+                    }
+                    catch (System.Exception ex)
+                    {
+                        Logger.Log(Logger.LogLevel.Warning, $"Failed to create disable file {disableFilePath}: {ex.Message}");
+                    }
                 }
             }
             // 修改后立即刷新兼容性状态（简单方案：刷新列表）
@@ -209,7 +225,15 @@ public class UIManager : MonoBehaviour
         // 删除 JSON 文件
         if (File.Exists(jsonFilePath))
         {
-            File.Delete(jsonFilePath);
+            try
+            {
+                File.Delete(jsonFilePath);
+                Logger.Log($"Deleted {jsonFilePath}");
+            }
+            catch (System.Exception ex)
+            {
+                Logger.Log(Logger.LogLevel.Warning, $"Failed to delete {jsonFilePath}: {ex.Message}");
+            }
         }
 
         // 删除 RequiredList 中列出的关联文件（位于同一目录）
@@ -221,7 +245,15 @@ public class UIManager : MonoBehaviour
                 string includedFilePath = Path.Combine(Path.GetDirectoryName(jsonFilePath), includedFile.Trim());
                 if (File.Exists(includedFilePath))
                 {
-                    File.Delete(includedFilePath);
+                    try
+                    {
+                        File.Delete(includedFilePath);
+                        Logger.Log($"Deleted {includedFilePath}");
+                    }
+                    catch (System.Exception ex)
+                    {
+                        Logger.Log(Logger.LogLevel.Warning, $"Failed to delete {includedFilePath}: {ex.Message}");
+                    }
                 }
             }
         }
@@ -252,6 +284,16 @@ public class UIManager : MonoBehaviour
         string[] iniFiles = Directory.GetFiles(modsDir, "*.ini", SearchOption.AllDirectories)
             .OrderBy(p => p, System.StringComparer.OrdinalIgnoreCase)
             .ToArray();
+
+        // 日志：报告发现的 Mods 数量，若为 0 则输出 Warning
+        if (iniFiles == null || iniFiles.Length == 0)
+        {
+            Logger.Log(Logger.LogLevel.Warning, $"No mods found in {modsDir}");
+        }
+        else
+        {
+            Logger.Log($"Loaded {iniFiles.Length} mods from {modsDir}");
+        }
 
         UpdateUIWithMods(iniFiles);
     }
