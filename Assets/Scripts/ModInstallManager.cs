@@ -33,25 +33,29 @@ public class ModInstallManager : MonoBehaviour, IDropHandler, IPointerEnterHandl
     {
         dirPath = Path.Combine(Application.dataPath, "..", "Mods");
 
+        var fadeController = GetComponent<UIElementFadeController>();
+
         // 绑定按钮以控制窗口显示
         if (selectFileButton != null)
         {
-            var fadeController = GetComponent<UIElementFadeController>();
             if (fadeController != null)
             {
                 selectFileButton.onClick.RemoveAllListeners();
                 selectFileButton.onClick.AddListener(fadeController.ActivateComponent);
             }
+            selectFileButton.onClick.AddListener(OpenFileSelector);
         }
 
         if (confirmButton != null)
-        {
-            confirmButton.onClick.RemoveAllListeners();
-            confirmButton.onClick.AddListener(OpenFileSelector);
-        }
+            confirmButton.onClick.AddListener(InstallConfirmed);
 
         if (cancelButton != null)
             cancelButton.onClick.AddListener(HideConfirmDialog);
+
+        // 注册拖放事件（使用自定义 FileDragHandler）
+        // 注意：此功能仅在 Windows 构建版本中有效，编辑器中无效
+        var dragHandler = gameObject.AddComponent<FileDragHandler>();
+        dragHandler.OnFilesDropped += OnFilesDropped;
 
         // 读取本地化（可选）
         try
@@ -70,6 +74,11 @@ public class ModInstallManager : MonoBehaviour, IDropHandler, IPointerEnterHandl
         }
 
         HideConfirmDialog();
+    }
+
+    void OnDestroy()
+    {
+        // FileDragHandler 会在 OnDisable 中自动清理 Windows 钩子
     }
 
     // 打开文件选择对话框（StandaloneFileBrowser）
@@ -115,6 +124,15 @@ public class ModInstallManager : MonoBehaviour, IDropHandler, IPointerEnterHandl
             ShowConfirmDialog();
         else
             Debug.LogError("Dropped archive validation failed.");
+    }
+
+    // 处理拖放文件事件
+    private void OnFilesDropped(System.Collections.Generic.List<string> paths)
+    {
+        if (paths != null && paths.Count > 0)
+        {
+            HandleDroppedFile(paths[0]); // 处理第一个文件
+        }
     }
 
     // 验证 ZIP 内容并读取 Manifest.ini 中的必要字段
@@ -181,8 +199,7 @@ public class ModInstallManager : MonoBehaviour, IDropHandler, IPointerEnterHandl
 
     void HideConfirmDialog()
     {
-        if (confirmDialog != null)
-            confirmDialog.SetActive(false);
+        confirmDialog?.SetActive(false);
     }
 
     public void InstallConfirmed()
@@ -214,22 +231,18 @@ public class ModInstallManager : MonoBehaviour, IDropHandler, IPointerEnterHandl
         HideConfirmDialog();
     }
 
-    // IDropHandler 接口（当 UI 元素内接收到 Unity 内部拖放事件时）
     public void OnDrop(PointerEventData eventData)
     {
-        // Unity 的 PointerEventData 不包含 OS 文件路径；如果使用外部插件或自定义实现，请调用 HandleDroppedFile
-        // 此处仅作为占位以便在未来扩展
+        
     }
 
     public void OnPointerEnter(PointerEventData eventData)
     {
-        if (dropArea != null)
-            dropArea.SetActive(true);
+        dropArea?.SetActive(true);
     }
 
     public void OnPointerExit(PointerEventData eventData)
     {
-        if (dropArea != null)
-            dropArea.SetActive(false);
+        dropArea?.SetActive(false);
     }
 }
