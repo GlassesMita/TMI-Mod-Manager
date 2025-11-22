@@ -28,6 +28,21 @@ public class Logger : MonoBehaviour
         Log(message, LogLevel.Info);
     }
 
+    public static void LogError(string message)
+    {
+        Log(message, LogLevel.Error);
+    }
+
+    public static void LogWarning(string message)
+    {
+        Log(message, LogLevel.Warning);
+    }
+
+    public static void LogInfo(string message)
+    {
+        Log(message, LogLevel.Info);
+    }
+
     // 写入消息并指定等级（不使用默认参数，以免与 Log(string) 冲突）
     public static void Log(string message, LogLevel level)
     {

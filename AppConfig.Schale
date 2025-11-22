@@ -19,6 +19,7 @@ IsFullScreen=False
 
 [Shortcut]
 
+ShowIndicator=False
 [Cursor]
 CursorBaseHeight=40
 
