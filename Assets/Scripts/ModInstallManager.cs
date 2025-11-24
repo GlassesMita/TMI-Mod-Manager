@@ -349,13 +349,22 @@ public class ModInstallManager : MonoBehaviour, IDropHandler, IPointerEnterHandl
             if (!Directory.Exists(modFolderPath))
                 Directory.CreateDirectory(modFolderPath);
 
+            // 检查目标文件是否存在
+            string manifestPath = Path.Combine(modFolderPath, "Manifest.ini");
+            if (File.Exists(manifestPath))
+            {
+                Debug.LogWarning($"File already exists: {manifestPath}. Overwriting...");
+                Logger.LogWarning($"File already exists: {manifestPath}. Overwriting...");
+                File.Delete(manifestPath); // 删除旧文件
+            }
+
+            // 解压文件到目标目录
             ZipFile.ExtractToDirectory(selectedFilePath, modFolderPath);
 
             Debug.Log($"Mod installed to {modFolderPath}");
             Logger.Log(LogLevel.Info, $"Mod {pluginName} installed to {modFolderPath}");
 
             uiManager?.RefreshFileList();
-
         }
         catch (Exception ex)
         {
