@@ -65,4 +65,24 @@ public class LocalizationManager : MonoBehaviour
         }
 
     }
+
+    public string GetLocalizedText(string key, string defaultText)
+    {
+        if (string.IsNullOrEmpty(key))
+        {
+            Debug.LogError("Key cannot be null or empty! Please provide a valid key.");
+            return defaultText;
+        }
+
+        IniFileReader localizedManager = new IniFileReader(Path.Combine(Application.streamingAssetsPath, "Localization", languageCode + ".ini"));
+        string textContent = localizedManager.GetValue("Localization", key);
+
+        if (string.IsNullOrEmpty(textContent))
+        {
+            Debug.LogWarning("Text content is null or empty! Using default text instead. Key: " + key);
+            return defaultText;
+        }
+
+        return textContent;
+    }
 }
